@@ -49,7 +49,8 @@ typedef struct PARTICLE_LIST {
 } PARTICLE_LIST;
 
 
-int particle_emitter_new(int max_particles, int life, int speed_min, int speed_max, unsigned char r, unsigned char g, unsigned char b, PARTICLE_TYPE type, int x, int y, int gravity, int angle_min, int angle_max);
+PARTICLE *particle_emitter_new(int max_particles, int life, int speed_min, int speed_max, unsigned char r, unsigned char g, unsigned char b, PARTICLE_TYPE type, int x, int y, int gravity, int angle_min, int angle_max);
 void particle_emitter_loop();
+void particle_emitter_stop();
 
 #endif

@@ -30,15 +30,15 @@ static void particle_list_remove(PARTICLE *p) {
 }
 
 
-int particle_emitter_new(int max_particles, int life, int speed_min, int speed_max, unsigned char r, unsigned char g, unsigned char b, PARTICLE_TYPE type, int x, int y, int gravity, int angle_min, int angle_max) {
+PARTICLE *particle_emitter_new(int max_particles, int life, int speed_min, int speed_max, unsigned char r, unsigned char g, unsigned char b, PARTICLE_TYPE type, int x, int y, int gravity, int angle_min, int angle_max) {
 	PARTICLE *p;
 	int i;
 
 	if (!(p = malloc(sizeof(PARTICLE))))
-		return 0;
+		return p;
 	if (!(p->particle = malloc(sizeof(PARTICLE_ONE) * max_particles))) {
 		free(p);
-		return 0;
+		return p;
 	}
 
 	for (i = 0; i < max_particles; i++)
@@ -65,7 +65,7 @@ int particle_emitter_new(int max_particles, int life, int speed_min, int speed_m
 
 	particle_list_add(p);
 
-	return 1;
+	return p;
 }
 
 
@@ -128,6 +128,13 @@ PARTICLE *particle_emitter_free(PARTICLE *particle) {
 	free(particle);
 
 	return NULL;
+}
+
+
+void particle_emitter_stop(PARTICLE *particle) {
+	particle->max_spawnrate = 0;
+
+	return;
 }
 
 
