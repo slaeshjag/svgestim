@@ -1,15 +1,23 @@
 #include "map.h"
+#include "game.h"
+#include "transform.h"
 
+#define MAX(a, b) ((a)>(b)?(a):(b))
+#define MIN(a, b) ((a)<(b)?(a):(b))
 #define MAPS 1
-#define MAP_LINES 8192
+#define MAP_LINES 1024
+#define MAP_SECTIONS 128
+#define MAP_SECTION_WIDTH (8*32)
 #define TILE_SIZE 8
 
 static DARNIT_TILESHEET *bogus_tilesheet;
 static struct {
 	unsigned int current;
 	DARNIT_MAP *map[MAPS];
-	DARNIT_LINE *line;
-	unsigned int lines;
+	DARNIT_LINE *line[MAP_SECTIONS];
+	LINE line_coord[MAP_SECTIONS][MAP_LINES];
+	unsigned int lines[MAP_SECTIONS];
+	unsigned int sections;
 } map;
 
 void map_init() {
@@ -20,41 +28,79 @@ void map_init() {
 		sprintf(fname, "level%i.ldmz", i);
 		map.map[i]=d_map_load(fname);
 	}
-	map.line=d_render_line_new(MAP_LINES, 1);
+	for(i=0; i<MAP_SECTIONS; i++)
+		map.line[i]=d_render_line_new(MAP_LINES, 1);
 }
 
 void map_load(int i) {
-	int x, y, layer, tmp;
-	map.lines=0;
-	for(layer=1; layer<map.map[i]->layers; layer++)
-		for(y=0; y<map.map[i]->layer[layer].tilemap->h; y++)
-			for(x=0; x<map.map[i]->layer[layer].tilemap->w; x++) {
+	int x, y, layer, tmp, x2, y2;
+	map.sections=0;
+	map.lines[0]=0;
+	
+	for(y=0; y<map.map[i]->layer->tilemap->h; y++)
+		for(x=0; x<map.map[i]->layer->tilemap->w; x++) {
+			if(!(x%(MAP_SECTION_WIDTH))) {
+				map.sections++;
+				map.lines[map.sections]=0;
+			}
+			for(layer=1; layer<map.map[i]->layers; layer++) {
 				switch(map.map[i]->layer[layer].tilemap->data[y*map.map[i]->layer[layer].tilemap->w+x]) {
 					case 0x90:
 						for(tmp=0; map.map[i]->layer[layer].tilemap->data[(y+tmp)*map.map[i]->layer[layer].tilemap->w+x]!=0xA0; tmp--);
-						d_render_line_move(map.line, map.lines, TILE_SIZE*x+TILE_SIZE/2, TILE_SIZE*y+TILE_SIZE/2, TILE_SIZE*x+TILE_SIZE/2, TILE_SIZE*(y+tmp)+TILE_SIZE/2);
-						map.lines++;
+						x2=TILE_SIZE*x+TILE_SIZE/2;
+						y2=TILE_SIZE*(y+tmp)+TILE_SIZE/2;
 						break;
 					case 0x91:
 						for(tmp=0; map.map[i]->layer[layer].tilemap->data[y*map.map[i]->layer[layer].tilemap->w+x+tmp]!=0xA1; tmp++);
-						d_render_line_move(map.line, map.lines, TILE_SIZE*x+TILE_SIZE/2, TILE_SIZE*y+TILE_SIZE/2, TILE_SIZE*(x+tmp)+TILE_SIZE/2, TILE_SIZE*y+TILE_SIZE/2);
-						map.lines++;
+						x2=TILE_SIZE*(x+tmp)+TILE_SIZE/2;
+						y2=TILE_SIZE*y+TILE_SIZE/2;
 						break;
 					case 0x92:
 						for(tmp=0; map.map[i]->layer[layer].tilemap->data[(y+tmp)*map.map[i]->layer[layer].tilemap->w+x-tmp]!=0xA2; tmp--);
-						d_render_line_move(map.line, map.lines, TILE_SIZE*x+TILE_SIZE/2, TILE_SIZE*y+TILE_SIZE/2, TILE_SIZE*(x-tmp)+TILE_SIZE/2, TILE_SIZE*(y+tmp)+TILE_SIZE/2);
-						map.lines++;
+						x2=TILE_SIZE*(x-tmp)+TILE_SIZE/2;
+						y2=TILE_SIZE*(y+tmp)+TILE_SIZE/2;
 						break;
 					case 0x93:
 						for(tmp=0; map.map[i]->layer[layer].tilemap->data[(y+tmp)*map.map[i]->layer[layer].tilemap->w+x+tmp]!=0xA3; tmp++);
-						d_render_line_move(map.line, map.lines, TILE_SIZE*x+TILE_SIZE/2, TILE_SIZE*y+TILE_SIZE/2, TILE_SIZE*(x+tmp)+TILE_SIZE/2, TILE_SIZE*(y+tmp)+TILE_SIZE/2);
-						map.lines++;
+						x2=TILE_SIZE*(x+tmp)+TILE_SIZE/2;
+						y2=TILE_SIZE*(y+tmp)+TILE_SIZE/2;
 						break;
+					default:
+						continue;
 				}
+				d_render_line_move(map.line[map.sections], map.lines[map.sections], TILE_SIZE*x+TILE_SIZE/2, TILE_SIZE*y+TILE_SIZE/2, x2, y2);
+				map.line_coord[map.sections][map.lines[map.sections]].x1=TILE_SIZE*x+TILE_SIZE/2;
+				map.line_coord[map.sections][map.lines[map.sections]].y1=TILE_SIZE*y+TILE_SIZE/2;
+				map.line_coord[map.sections][map.lines[map.sections]].x2=x2;
+				map.line_coord[map.sections][map.lines[map.sections]].y2=y2;
+				map.lines[map.sections]++;
 			}
+		}
 	map.current=i;
 }
 
 void map_render() {
-	d_render_line_draw(map.line, map.lines);
+	int i;
+	for(i=0; i<map.sections; i++)
+		d_render_line_draw(map.line[i], map.lines[i]);
+}
+
+int map_collide(int *obj, int lines, int x1, int y1) {
+	unsigned int section1=0, section2=0;
+	int i;
+	for(i=0; i<lines; i++) {
+		section1=MIN(section1, obj[i*2]);
+		section2=MAX(section1, obj[i*2]);
+	}
+	for(i=0; i<map.lines[section1]; i++) {
+		if(collision_test((void *) &map.line_coord[section1][i], 1, 0, 0, obj, lines, x1, y1))
+			return 1;
+	}
+	if(section1==section2)
+		return 0;
+	for(i=0; i<map.lines[section2]; i++) {
+		if(collision_test((void *) &map.line_coord[section2][i], 1, 0, 0, obj, lines, x1, y1))
+			return 1;
+	}
+	return 0;
 }

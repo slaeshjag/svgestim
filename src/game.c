@@ -1,5 +1,6 @@
 #include "game.h"
 #include "map.h"
+
 void game_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
 	
 }
