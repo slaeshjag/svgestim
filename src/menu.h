@@ -2,6 +2,8 @@
 #define MENU_H
 #include "svgestim.h"
 
-void render_menu();
+void menu_init();
+void menu_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse);
+void menu_render();
 
 #endif
