@@ -9,6 +9,8 @@
 #include "shapeloader.h"
 #include "player.h"
 #include "transform.h"
+#include "enemy.h"
+#include "particle.h"
 
 #define TEXT_STATIC(var, font, text, x, y) (d_text_surface_string_append((var)=d_text_surface_new((font), 64, 800, (x), (y)), (text)))
 #define TEXT_INDENT(var, text, x) \
