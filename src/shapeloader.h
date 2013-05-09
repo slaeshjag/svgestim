@@ -7,6 +7,7 @@ typedef struct {
 	int		lines;
 	int		*coordinate;
 	int		spawn;
+	int		duration;
 } SHAPE;
 
 
@@ -15,6 +16,7 @@ typedef struct {
 	int		*coord;
 	int		min;
 	int		max;
+	int		duration;
 	DARNIT_LINE	*line;
 } SHAPE_COPY;
 
