@@ -1,0 +1,87 @@
+#!/usr/bin/env python
+import sys
+import os
+
+if len(sys.argv)<2:
+	sys.stderr.write("Usage: makemodel <filename>\n")
+	sys.exit(1)
+
+
+if not os.path.exists(sys.argv[1]):
+	sys.stderr.write("Error: file not found\n")
+	sys.exit(1)
+
+w=0
+h=0
+lines=0
+
+f=open(sys.argv[1])
+for line in f.readlines():
+	prop=line.split("=")
+	if(prop[0].strip()=="width"):
+		w=int(prop[1].strip()[1:-1])
+		print "width: %i"%w
+		continue
+	if(prop[0].strip()=="height"):
+		h=int(prop[1].strip()[1:-1])
+		print "height: %i"%h
+		continue
+	if(prop[0].strip()=="d"):
+		startx=None
+		starty=None
+		start_set=False
+		x=0
+		y=0
+		data=prop[1].strip()[1:-1]
+		tokens=data.split(" ")
+		action=""
+		tmp=[]
+		
+		for token in tokens:
+			if(token=="m" or token=="M"):
+				sys.stdout.write("\nCOORDINATES	")
+				action=token
+				continue
+			if(token=="z"):
+				sys.stdout.write(" %i %i"%(int(startx)-w/2, int(starty)-h/2))
+				lines+=1
+			if(token.isalpha()):
+				action=token
+				continue
+			if(action=="L"):
+				tmp=token.split(",")
+				sys.stdout.write(" %i %i"%(int(float(tmp[0])-w/2), int(float(tmp[1])-h/2)))
+				lines+=1
+				continue
+			if(action=="l"):
+				tmp=token.split(",")
+				sys.stdout.write(" %i %i"%(int(float(tmp[0])+x-w/2), int(float(tmp[1])+y-h/2)))
+				lines+=1
+				continue
+			if(action=="m"):
+				tmp=token.split(",")
+				sys.stdout.write(" %i %i"%(int(float(tmp[0])+x-w/2), int(float(tmp[1])+y-h/2)))
+				x+=float(tmp[0])
+				y+=float(tmp[1])
+				if not start_set:
+					startx=x
+					starty=y
+					start_set=True
+				action="l"
+				continue
+			if(action=="M"):
+				tmp=token.split(",")
+				sys.stdout.write(" %i %i"%(int(float(tmp[0])-w/2), int(float(tmp[1])-h/2)))
+				x=float(tmp[0])
+				y=float(tmp[1])
+				if not start_set:
+					startx=x
+					starty=y
+					start_set=True
+				action="L"
+				continue
+		print ""
+		print "lines: %i"%lines
+		continue
+
+f.close();
