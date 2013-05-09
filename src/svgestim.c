@@ -68,8 +68,8 @@ static void init() {
 int main(int argc, char **argv) {
 	DARNIT_KEYS keys;
 	DARNIT_MOUSE mouse;
-	PARTICLE *p = particle_emitter_new(1500, 3000, 1, 8000, 255, 0, 0, PARTICLE_TYPE_PULSE, 400, 240, 200);
-	PARTICLE *p2 = particle_emitter_new(500, 3000, 1, 8000, 255, 255, 0, PARTICLE_TYPE_PULSE, 400, 240, 200);
+	particle_emitter_new(30, 5000, 8000, 10000, 255, 0, 0, PARTICLE_TYPE_PULSE, 400, 240, 0, -100, 100);
+	particle_emitter_new(30, 5000, 8000, 10000, 255, 255, 0, PARTICLE_TYPE_PULSE, 400, 240, 0, -100, 100);
 	
 	init();
 	gamestate(GAMESTATE_MENU);
@@ -83,8 +83,7 @@ int main(int argc, char **argv) {
 		d_render_begin();
 		if(render[_gamestate])
 			render[_gamestate]();
-		particle_emitter_loop(p);
-		particle_emitter_loop(p2);
+		particle_emitter_loop();
 		d_render_end();
 		d_loop();
 	}
