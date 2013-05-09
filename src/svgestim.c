@@ -68,7 +68,8 @@ int main(int argc, char **argv) {
 		keys=d_keys_get();
 		mouse=d_mouse_get();
 		
-		handle[_gamestate](&keys, &mouse);
+		if(handle[_gamestate])
+			handle[_gamestate](&keys, &mouse);
 		d_render_begin();
 		if(render[_gamestate])
 			render[_gamestate]();
