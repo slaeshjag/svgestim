@@ -1,13 +1,17 @@
 #include "svgestim.h"
 #include "menu.h"
+#include "map.h"
+#include "game.h"
 
 static GAMESTATE _gamestate=GAMESTATE_MENU;
 static void (*render[GAMESTATES])()={
 	[GAMESTATE_MENU]=menu_render,
+	[GAMESTATE_GAME]=game_render,
 };
 
 static void (*handle[GAMESTATES])(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse)={
 	[GAMESTATE_MENU]=menu_handle,
+	[GAMESTATE_GAME]=game_handle,
 };
 
 static DARNIT_INPUT_MAP menu_keymap_desktop={
@@ -39,6 +43,9 @@ void gamestate(GAMESTATE state) {
 			else
 				d_keymapping_set(menu_keymap_desktop);
 			break;
+		case GAMESTATE_GAME:
+			map_load(0);
+			break;
 		default:
 			break;
 	}
@@ -54,6 +61,7 @@ static void init() {
 	menu_init();
 	//game_init();
 	//pause_init();
+	map_init();
 	d_render_blend_enable();
 }
 
