@@ -59,9 +59,10 @@ static void init() {
 	font.vectroid=d_font_load("vectroid.ttf", 32, 512, 512);
 	
 	menu_init();
-	//game_init();
+	game_init();
 	//pause_init();
 	map_init();
+	
 	d_render_blend_enable();
 }
 

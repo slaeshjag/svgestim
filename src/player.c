@@ -24,23 +24,20 @@ int player_spawn(int x, int y, SHAPE *shape) {
 }
 
 
-int player_loop() {
-	DARNIT_KEYS keys;
-
+int player_loop(DARNIT_KEYS *keys) {
 	if (!player)
 		return 0;
 	
-	keys = d_keys_get();
-	if (keys.left)
+	if (keys->left)
 		player->vel_x += PLAYER_ACCELERATION * d_last_frame_time();
-	else if (keys.right)
+	else if (keys->right)
 		player->vel_x -= PLAYER_ACCELERATION * d_last_frame_time();
-	else
+	else if (player->vel_x)
 		player->vel_x += (player->vel_x < 0 ? 1 : -1) * (PLAYER_ACCELERATION>>1) * d_last_frame_time();
 	if (abs(player->vel_x) > PLAYER_SPEED_X_MAX)
 		player->vel_x = (player->vel_x < 0 ? -1 : 1) * PLAYER_SPEED_X_MAX;
 	
-	player->x += player->vel_x * d_last_frame_time() * (keys.l ? 2 : 1);
+	player->x += player->vel_x * d_last_frame_time() * (keys->l ? 2 : 1);
 	player->y += player->vel_y * d_last_frame_time();
 
 	if (player->x / 1000 >= PLAYER_KILLZONE) {
@@ -54,17 +51,20 @@ int player_loop() {
 
 
 void player_render() {
-	d_render_offset(player->x / 1000, player->y / 1000);
+	if(!player)
+		return;
+	d_render_offset(-(player->x / 1000), -(player->y / 1000));
+	printf("player at (%i, %i)\n", player->x / 1000, player->y / 1000);
 	shape_copy_render(player->shape);
-
+	d_render_offset(0, 0);
 	return;
 }
 
 
 void player_kill() {
-	shape_copy_free(player->shape);
+	/*shape_copy_free(player->shape);
 	free(player);
 	player = NULL;
-
+	*/
 	return;
 }

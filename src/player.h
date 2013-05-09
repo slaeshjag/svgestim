@@ -13,7 +13,7 @@ typedef struct {
 
 
 int player_spawn(int x, int y, SHAPE *shape);
-int player_loop();
+int player_loop(DARNIT_KEYS *keys);
 void player_render();
 void player_kill();
 

@@ -1,6 +1,7 @@
 #include "map.h"
 #include "game.h"
 #include "transform.h"
+#include "player.h"
 
 #define MAX(a, b) ((a)>(b)?(a):(b))
 #define MIN(a, b) ((a)<(b)?(a):(b))
@@ -77,6 +78,7 @@ void map_load(int i) {
 			}
 		}
 	map.current=i;
+	player_spawn(64, 128, model.player);
 }
 
 void map_render() {

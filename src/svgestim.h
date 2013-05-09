@@ -32,6 +32,10 @@ struct {
 	DARNIT_FONT *vectroid;
 } font;
 
+struct {
+	SHAPE *player;
+} model;
+
 DARNIT_PLATFORM platform;
 
 void gamestate(GAMESTATE state);

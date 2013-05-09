@@ -16,6 +16,7 @@ typedef struct {
 
 typedef RECTANGLE LINE;
 
+void game_init();
 void game_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse);
 void game_render();
 
