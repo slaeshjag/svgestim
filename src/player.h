@@ -7,9 +7,7 @@ typedef struct {
 	int			vel_x;
 	int			vel_y;
 
-	DARNIT_LINE		*line;
-	int			*coord;
-	int			lines;
+	SHAPE_COPY		*shape;
 } PLAYER;
 
 

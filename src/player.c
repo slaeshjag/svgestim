@@ -5,8 +5,6 @@
 
 
 int player_spawn(int x, int y, SHAPE *shape) {
-	int i;
-
 	if (player)
 		player_kill();
 
@@ -15,16 +13,12 @@ int player_spawn(int x, int y, SHAPE *shape) {
 		return 0;
 	}
 
+	player->shape = shape_copy_copy(shape);
 
-	player->coord = memdup(shape->coordinate, (shape->lines  + 1) * 2 * sizeof(int));
-	player->lines = shape->lines;
-	player->line = d_render_line_new(shape->lines, 1);
-
-	for (i = 0; i < shape->lines; i++)
-		d_render_line_move(player->line, i, player->coord[i * 2], player->coord[i * 2 + 1], player->coord[i * 2 + 2], player->coord[i * 2 + 3]);
-	
 	player->x = x * 1000;
 	player->y = y * 1000;
+	player->vel_x = 0;
+	player->vel_y = 0;
 	
 	return 1;
 }
@@ -61,13 +55,14 @@ int player_loop() {
 
 void player_render() {
 	d_render_offset(player->x / 1000, player->y / 1000);
-	d_render_line_draw(player->line, ~0);
+	shape_copy_render(player->shape);
 
 	return;
 }
 
 
 void player_kill() {
+	shape_copy_free(player->shape);
 	free(player);
 	player = NULL;
 
