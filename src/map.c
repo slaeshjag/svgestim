@@ -95,7 +95,7 @@ void map_load(int i) {
 		}
 	}
 	map.current=i;
-	player_spawn(64, 128, model.player, model.gun);
+	player_spawn(64, 128, model.player, model.gun, model.grenade);
 	camera_x = 0;
 	camera_scroll_speed = CAMERA_SCROLL_SPEED;
 }

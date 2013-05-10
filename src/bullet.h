@@ -38,7 +38,7 @@ BULLET_LIST *bullet_add(BULLET_LIST *list, int x, int y, int angle, SHAPE *bulle
 void bullet_remove(BULLET_LIST **list, BULLET_LIST *remove);
 void bullet_loop(BULLET_LIST **list_p);
 
-GRENADE_LIST *grenade_add(GRENADE_LIST *list, int x, int y, int angle, SHAPE *grenade);
+GRENADE_LIST *grenade_add(GRENADE_LIST *list, int x, int y, int angle, int time, SHAPE *grenade);
 void grenade_remove(GRENADE_LIST **list, GRENADE_LIST *remove);
 void grenade_loop(GRENADE_LIST **list_p);
 

@@ -5,7 +5,7 @@
 #include "player.h"
 
 
-int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun) {
+int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun, SHAPE *grenade) {
 	if (player)
 		player_kill();
 
@@ -16,6 +16,7 @@ int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun) {
 	
 	player->shape=shape;
 	player->gun = shape_copy_copy(gun);
+	player->grenade_shape = shape_copy_copy(grenade);
 
 	player->x = x * 1000;
 	player->y = y * 1000;
@@ -31,6 +32,7 @@ int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun) {
 	return 1;
 }
 
+static int grenade_time=0;
 
 /* Bästa Snyggkoden™ i stan! */
 int player_loop(DARNIT_KEYS *keys) {
@@ -57,11 +59,15 @@ int player_loop(DARNIT_KEYS *keys) {
 		particle_emitter_new(30, 100, 8000, 10000, 255, 0, 0, PARTICLE_TYPE_PULSE, x, y, 0, player->gun_angle-100, player->gun_angle+100);
 		particle_emitter_new(30, 100, 8000, 10000, 255, 255, 0, PARTICLE_TYPE_PULSE, x, y, 0, player->gun_angle-100, player->gun_angle+100);
 	}
-	if(keys->b&&!grenade_key&&player->grenades) {
-		//TODO: hold grenade while holding key, throw on release for timed attacks
+	if(keys->b&&(!grenade_key)&&player->grenades)
+		grenade_time=d_time_get();
+	if((grenade_key&&!keys->b)||(grenade_time&&d_time_get()>=GRENADE_LIFE+grenade_time)) {
 		int x=player->x/1000+28, y=player->y/1000+(player->gun_angle?player->gun_angle/20:0);
-		player->grenade=grenade_add(player->grenade, x, y, player->gun_angle, model.grenade);
-		player->grenades--;
+		if(player->grenades) {
+			player->grenade=grenade_add(player->grenade, x, y, player->gun_angle, grenade_time+GRENADE_LIFE-d_time_get(), model.grenade);
+			player->grenades--;
+		}
+		grenade_time=0;
 	}
 	shoot_key=keys->a;
 	grenade_key=keys->b;
@@ -138,6 +144,13 @@ void player_render() {
 	shape_copy_rotate(player->gun, player->gun_angle);
 	shape_copy_render(player->gun);
 	shape_copy_rotate(player->gun, -player->gun_angle);
+	d_render_offset(-((player->x/1000) - camera_x/1000 )-16, -(player->y/1000+(player->gun_angle?player->gun_angle/20:0)));
+	
+	if(grenade_time) {
+		d_render_tint(0x0, 0xFF, 0x0, 0xFF);
+		shape_copy_render(player->grenade_shape);
+		d_render_tint(0xFF, 0xFF, 0xFF, 0xFF);
+	}
 	d_render_offset(0, 0);
 	if(gamestate_current()!=GAMESTATE_GAME)
 		return;
@@ -156,7 +169,10 @@ void player_hurt(int damage) {
 void player_kill() {
 	while(player->bullet)
 		bullet_remove(&player->bullet, player->bullet);
+	while(player->grenade)
+		grenade_remove(&player->grenade, player->grenade);
 	shape_copy_free(player->gun);
+	shape_copy_free(player->grenade_shape);
 	free(player);
 	player = NULL;
 	gamestate(GAMESTATE_GAMEOVER);

@@ -12,13 +12,14 @@ typedef struct {
 	
 	SHAPE_SPRITE	*shape;
 	SHAPE_COPY		*gun;
+	SHAPE_COPY		*grenade_shape;
 	BULLET_LIST		*bullet;
 	GRENADE_LIST		*grenade;
 } PLAYER;
 
 
 
-int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun);
+int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun, SHAPE *grenade);
 int player_loop(DARNIT_KEYS *keys);
 void player_render();
 void player_hurt(int damage);
