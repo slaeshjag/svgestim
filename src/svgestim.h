@@ -40,12 +40,22 @@ struct {
 	SHAPE *gun;
 	SHAPE *bullet;
 	SHAPE *grenade;
-	SHAPE *enemy;
+	SHAPE *enemy[16];
 	SHAPE *explosion;
 } model;
+
+struct {
+	DARNIT_SOUND *explosion;
+	DARNIT_SOUND *jump;
+	DARNIT_SOUND *shoot;
+	DARNIT_SOUND *enemy_kill;
+	DARNIT_SOUND *powerup;
+	DARNIT_SOUND *powerup_small;
+} sound;
 
 DARNIT_PLATFORM platform;
 
 void gamestate(GAMESTATE state);
+GAMESTATE gamestate_current();
 
 #endif

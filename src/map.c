@@ -45,9 +45,9 @@ void map_load(int i) {
 	
 	for(x=0; x<map.map[i]->layer->tilemap->w; x++) {
 		for(y=0; y<map.map[i]->layer->tilemap->h; y++) {
-			switch(map.map[i]->layer->tilemap->data[y*map.map[i]->layer->tilemap->w+x]) {
+			switch((tmp=map.map[i]->layer->tilemap->data[y*map.map[i]->layer->tilemap->w+x])&0xF0) {
 				case 0x30:
-					map.enemy[map.enemies]=enemy_spawn(x*TILE_SIZE, y*TILE_SIZE, 0, model.enemy);
+					map.enemy[map.enemies]=enemy_spawn(x*TILE_SIZE, y*TILE_SIZE, tmp&0xF, model.enemy[tmp&0xF]);
 					map.enemies++;
 					break;
 				default:

@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "game.h"
 
 #define TEXT_MENU(i, text) \
 	TEXT_STATIC(menu.menu[(i)-1], font.vectroid, "F"#i, 128+64, 128+32*((i)-1)); \
@@ -14,6 +15,10 @@ static struct {
 	DARNIT_TEXT_SURFACE *subtitle;
 } gameover;
 
+static struct {
+	DARNIT_TEXT_SURFACE *title;
+} pause;
+
 void menu_init() {
 	TEXT_STATIC(menu.title, font.univox, "svgestim", 64, 16);
 	TEXT_MENU(1, "start game");
@@ -23,6 +28,8 @@ void menu_init() {
 	
 	TEXT_STATIC(gameover.title, font.univox, "game over,", 16, 16);
 	TEXT_STATIC(gameover.subtitle, font.univox, "n00b", 64+32, 64);
+	
+	TEXT_STATIC(pause.title, font.univox, "game paused", 8, 16);
 }
 
 void menu_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
@@ -51,4 +58,16 @@ void gameover_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
 void gameover_render() {
 	d_text_surface_draw(gameover.title);
 	d_text_surface_draw(gameover.subtitle);
+}
+
+void pause_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
+	if(keys->select)
+		gamestate(GAMESTATE_MENU);
+	if(keys->start)
+		gamestate(GAMESTATE_GAME);
+}
+
+void pause_render() {
+	game_render();
+	d_text_surface_draw(pause.title);
 }

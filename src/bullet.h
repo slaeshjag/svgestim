@@ -6,6 +6,11 @@
 #define	GRENADE_VELOCITY		10000
 #define	GRENADE_LIFE		1000
 
+typedef enum {
+	BULLET_OWNER_PLAYER,
+	BULLET_OWNER_ENEMY,
+} BULLET_OWNER;
+
 typedef struct BULLET_LIST {
 	SHAPE_COPY		*copy;
 	int			x;
@@ -13,6 +18,7 @@ typedef struct BULLET_LIST {
 	int			vel_x;
 	int			vel_y;
 	int			life;
+	BULLET_OWNER owner;
 	struct BULLET_LIST	*next;
 } BULLET_LIST;
 
@@ -28,7 +34,7 @@ typedef struct GRENADE_LIST {
 
 SHAPE_COPY *grenade_explosion;
 
-BULLET_LIST *bullet_add(BULLET_LIST *list, int x, int y, int angle, SHAPE *bullet);
+BULLET_LIST *bullet_add(BULLET_LIST *list, int x, int y, int angle, SHAPE *bullet, BULLET_OWNER owner);
 void bullet_remove(BULLET_LIST **list, BULLET_LIST *remove);
 void bullet_loop(BULLET_LIST **list_p);
 

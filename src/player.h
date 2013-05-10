@@ -8,6 +8,7 @@ typedef struct {
 	int			vel_y;
 	int			gun_angle;
 	int			health;
+	int			grenades;
 	
 	SHAPE_SPRITE	*shape;
 	SHAPE_COPY		*gun;
@@ -20,20 +21,21 @@ typedef struct {
 int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun);
 int player_loop(DARNIT_KEYS *keys);
 void player_render();
+void player_hurt(int damage);
 void player_kill();
 
 #endif
 
-#ifdef LOCAL_NAMESPACE
-
 PLAYER				*player;
+
+#ifdef LOCAL_NAMESPACE
 
 #define	PLAYER_ACCELERATION	300000
 #define	PLAYER_FRICTION	300000
 #define	PLAYER_SPEED_X_MAX	200000
 #define	PLAYER_SPEED_Y_MAX	200000
-#define	PLAYER_JUMP_ACCELERATION	200000
+#define	PLAYER_JUMP_ACCELERATION	150000
 #define	PLAYER_KILLZONE		480
-#define	PLAYER_GRAVITY		256
+#define	PLAYER_GRAVITY		300
 
 #endif

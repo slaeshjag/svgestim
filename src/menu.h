@@ -9,4 +9,7 @@ void menu_render();
 void gameover_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse);
 void gameover_render();
 
+void pause_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse);
+void pause_render();
+
 #endif

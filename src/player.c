@@ -22,6 +22,7 @@ int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun) {
 	player->vel_x = 0;
 	player->vel_y = 0;
 	player->health=100;
+	player->grenades=3;
 	
 	player->gun_angle=0;
 	player->bullet=NULL;
@@ -42,21 +43,24 @@ int player_loop(DARNIT_KEYS *keys) {
 	shape=shapesprite_get_current_shape(player->shape);
 	
 	if(keys->up)
-		player->gun_angle=-450;
+		player->gun_angle=-300;
 	else if(keys->down)
-		player->gun_angle=450;
+		player->gun_angle=300;
 	else
 		player->gun_angle=0;
 	
 	if(keys->a&&!shoot_key) {
 		int x=player->x/1000+28, y=player->y/1000+(player->gun_angle?player->gun_angle/20:0);
-		player->bullet=bullet_add(player->bullet, x, y, player->gun_angle, model.bullet);
+		player->bullet=bullet_add(player->bullet, x, y, player->gun_angle, model.bullet, BULLET_OWNER_PLAYER);
+		d_sound_play(sound.shoot, 0, 127, 127, 0);
 		particle_emitter_new(30, 100, 8000, 10000, 255, 0, 0, PARTICLE_TYPE_PULSE, x, y, 0, player->gun_angle-100, player->gun_angle+100);
 		particle_emitter_new(30, 100, 8000, 10000, 255, 255, 0, PARTICLE_TYPE_PULSE, x, y, 0, player->gun_angle-100, player->gun_angle+100);
 	}
-	if(keys->b&&!grenade_key) {
+	if(keys->b&&!grenade_key&&player->grenades) {
+		//TODO: hold grenade while holding key, throw on release for timed attacks
 		int x=player->x/1000+28, y=player->y/1000+(player->gun_angle?player->gun_angle/20:0);
 		player->grenade=grenade_add(player->grenade, x, y, player->gun_angle, model.grenade);
+		player->grenades--;
 	}
 	shoot_key=keys->a;
 	grenade_key=keys->b;
@@ -119,13 +123,23 @@ void player_render() {
 	shape_copy_render(player->gun);
 	shape_copy_rotate(player->gun, -player->gun_angle);
 	d_render_offset(0, 0);
+	if(gamestate_current()!=GAMESTATE_GAME)
+		return;
 	bullet_loop(&player->bullet);
 	grenade_loop(&player->grenade);
 	return;
 }
 
+void player_hurt(int damage) {
+	player->health-=damage;
+	printf("hp %i\n", player->health);
+	if(player->health<=0)
+		player_kill();
+}
 
 void player_kill() {
+	while(player->bullet)
+		bullet_remove(&player->bullet, player->bullet);
 	shape_copy_free(player->gun);
 	free(player);
 	player = NULL;

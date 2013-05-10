@@ -8,12 +8,14 @@ static void (*render[GAMESTATES])()={
 	[GAMESTATE_MENU]=menu_render,
 	[GAMESTATE_GAME]=game_render,
 	[GAMESTATE_GAMEOVER]=gameover_render,
+	[GAMESTATE_PAUSE]=pause_render,
 };
 
 static void (*handle[GAMESTATES])(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse)={
 	[GAMESTATE_MENU]=menu_handle,
 	[GAMESTATE_GAME]=game_handle,
 	[GAMESTATE_GAMEOVER]=gameover_handle,
+	[GAMESTATE_PAUSE]=pause_handle,
 };
 
 static DARNIT_INPUT_MAP menu_keymap_desktop={
@@ -38,7 +40,6 @@ void gamestate(GAMESTATE state) {
 		default:
 			break;
 	}
-	_gamestate=state;
 	switch(state) {
 		case GAMESTATE_MENU:
 			if(platform.platform&DARNIT_PLATFORM_HANDHELD)
@@ -47,15 +48,26 @@ void gamestate(GAMESTATE state) {
 				d_keymapping_set(menu_keymap_desktop);
 			break;
 		case GAMESTATE_GAME:
+			memset(&k, 0xFF, sizeof(DARNIT_KEYS));
+			d_keys_set(k);
+			if(_gamestate==GAMESTATE_PAUSE)
+				break;
+			_gamestate=state;
 			map_load(0);
 			break;
 		case GAMESTATE_GAMEOVER:
+		case GAMESTATE_PAUSE:
 			memset(&k, 0xFF, sizeof(DARNIT_KEYS));
 			d_keys_set(k);
 			break;
 		default:
 			break;
 	}
+	_gamestate=state;
+}
+
+GAMESTATE gamestate_current() {
+	return _gamestate;
 }
 
 static void init() {
