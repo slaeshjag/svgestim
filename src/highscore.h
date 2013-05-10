@@ -10,4 +10,14 @@ typedef struct {
 } HIGHSCORE;
 
 
+DARNIT_TEXT_SURFACE	*highscore_text;
+HIGHSCORE highscore_table[HIGHSCORE_CAP];
+
+
+int highscore_init();
+void highscore_save();
+void highscore_add();
+void highscore_render();
+void highscore_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse);
+
 #endif
