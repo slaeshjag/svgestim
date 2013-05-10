@@ -18,7 +18,7 @@ void game_init() {
 	model.explosion=shape_load("explosion");
 	model.flamethrower=shape_load("flamethrower");
 	model.powerup[0]=shape_load("powerup_hp");
-	model.powerup[1]=shape_load("powerup_grenade");
+	model.powerup[1]=shape_load("powerup_grenades");
 	
 	sound.explosion=d_sound_streamed_load("explosion.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
 	sound.jump=d_sound_streamed_load("jump.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
