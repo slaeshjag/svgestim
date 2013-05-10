@@ -39,7 +39,9 @@ struct {
 	SHAPE_SPRITE *player;
 	SHAPE *gun;
 	SHAPE *bullet;
+	SHAPE *grenade;
 	SHAPE *enemy;
+	SHAPE *explosion;
 } model;
 
 DARNIT_PLATFORM platform;

@@ -12,6 +12,7 @@ typedef struct {
 	SHAPE_SPRITE	*shape;
 	SHAPE_COPY		*gun;
 	BULLET_LIST		*bullet;
+	GRENADE_LIST		*grenade;
 } PLAYER;
 
 
