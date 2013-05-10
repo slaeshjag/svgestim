@@ -33,6 +33,7 @@ typedef struct GRENADE_LIST {
 } GRENADE_LIST;
 
 SHAPE_COPY *grenade_explosion;
+SHAPE_COPY *flamethrower;
 
 BULLET_LIST *bullet_add(BULLET_LIST *list, int x, int y, int angle, SHAPE *bullet, BULLET_OWNER owner);
 void bullet_remove(BULLET_LIST **list, BULLET_LIST *remove);

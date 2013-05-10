@@ -15,6 +15,7 @@ void game_init() {
 	model.enemy[3]=shape_load("tank");
 	model.enemy_right=shape_load("enemy_right");
 	model.explosion=shape_load("explosion");
+	model.flamethrower=shape_load("flamethrower");
 	
 	sound.explosion=d_sound_streamed_load("explosion.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
 	sound.jump=d_sound_streamed_load("jump.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
@@ -23,11 +24,12 @@ void game_init() {
 	sound.powerup=d_sound_streamed_load("powerup.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
 	sound.powerup_small=d_sound_streamed_load("powerup_small.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
 	
-	sound.music=d_sound_tracked_load("music.mod", DARNIT_AUDIO_STREAM, DARNIT_AUDIO_STEREO);
+	sound.music=d_sound_tracked_load("music.mod", DARNIT_AUDIO_STREAM, DARNIT_AUDIO_MONO);
 	if(sound.music)
-		d_sound_play(sound.music, 0, 127, 127, 0);
+		d_sound_play(sound.music, 0, 96, 96, 0);
 	
 	grenade_explosion=shape_copy_copy(model.explosion);
+	flamethrower=shape_copy_copy(model.flamethrower);
 }
 
 void game_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
