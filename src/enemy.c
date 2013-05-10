@@ -30,8 +30,8 @@ void enemy_move(ENEMY *enemy) {
 		case ENEMY_TYPE_BOSS:
 			if(!(rand()%500)) {
 				boss_shooting=d_time_get()+2000;
-				particle_emitter_new(700, 3500, 1, 3000, 255, 0, 0, PARTICLE_TYPE_PULSE, enemy->x/1000-128, enemy->y/1000, 50, 1700, 1900);
-				particle_emitter_new(700, 3500, 1, 3000, 255, 255, 0, PARTICLE_TYPE_PULSE, enemy->x/1000-128, enemy->y/1000-48, 50, 1700, 1900);
+				particle_emitter_new(700, 4500, 1, 3000, 255, 0, 0, PARTICLE_TYPE_PULSE, enemy->x/1000-128, enemy->y/1000-48, 50, 1700, 1900);
+				particle_emitter_new(700, 4500, 1, 3000, 255, 255, 0, PARTICLE_TYPE_PULSE, enemy->x/1000-128, enemy->y/1000-48, 50, 1700, 1900);
 			}
 				
 		case ENEMY_TYPE_GUNMAN:
@@ -56,12 +56,15 @@ void enemy_render(ENEMY *enemy) {
 			if(!enemy->weapon.normal.dir)
 				shape=enemy->weapon.normal.right;
 			break;
+		case ENEMY_TYPE_BOSS:
 		case ENEMY_TYPE_GUNMAN:
 			if(gamestate_current()==GAMESTATE_GAME)
 				bullet_loop(&enemy->weapon.bullet);
+				break;
 		case ENEMY_TYPE_GRENADIER:
 			if(gamestate_current()==GAMESTATE_GAME)
 				grenade_loop(&enemy->weapon.grenade);
+				break;
 		default:
 			break;
 	}
