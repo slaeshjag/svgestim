@@ -54,7 +54,7 @@ void shape_copy_rotate(SHAPE_COPY *copy, int angle) {
 	if (!copy)
 		return;
 
-	for (i = 0; i < copy->lines + 1; i++) {
+	for (i = 0; i < copy->lines; i++) {
 		x1 = copy->coord[i * 2];
 		x2 = copy->coord[i * 2 + 2];
 		y1 = copy->coord[i * 2 + 1];
