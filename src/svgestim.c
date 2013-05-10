@@ -54,6 +54,7 @@ void gamestate(GAMESTATE state) {
 				break;
 			_gamestate=state;
 			map_load(0);
+			score = 0;
 			break;
 		case GAMESTATE_GAMEOVER:
 		case GAMESTATE_PAUSE:

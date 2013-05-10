@@ -108,6 +108,7 @@ ENEMY *map_enemy_collide(SHAPE_COPY *shape, int x, int y) {
 
 void map_loop() {
 	int i;
+	camera_scroll_speed = CAMERA_SCROLL_SPEED + score / 5000;
 	camera_x += camera_scroll_speed * d_last_frame_time();
 	for(i=0; i<map.enemies; i++) {
 		enemy_move(map.enemy[i]);
