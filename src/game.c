@@ -9,8 +9,9 @@ void game_init() {
 	model.gun=shape_load("gun");
 	model.bullet=shape_load("bullet");
 	model.grenade=shape_load("grenade");
-	model.enemy[0]=shape_load("enemy");
+	model.enemy[0]=shape_load("enemy_left");
 	model.enemy[1]=shape_load("enemy_gunner");
+	model.enemy_right=shape_load("enemy_right");
 	model.explosion=shape_load("explosion");
 	
 	sound.explosion=d_sound_streamed_load("explosion.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);

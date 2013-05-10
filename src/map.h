@@ -21,5 +21,7 @@ void map_render();
 ENEMY *map_enemy_collide(SHAPE_COPY *shape, int x, int y);
 MAP_SLOPE map_collide_dir(int *obj, int lines, int x1, int y1, int dir);
 int map_collide(int *obj, int lines, int x1, int y1);
+unsigned int map_get_tile(int x, int y, int layer);
+void map_cleanup();
 
 #endif

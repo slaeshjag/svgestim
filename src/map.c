@@ -53,6 +53,8 @@ void map_load(int i) {
 			switch((tmp=map.map[i]->layer->tilemap->data[y*map.map[i]->layer->tilemap->w+x])&0xF0) {
 				case 0x30:
 					map.enemy[map.enemies]=enemy_spawn(x*TILE_SIZE, y*TILE_SIZE, tmp&0xF, model.enemy[tmp&0xF]);
+					if(tmp==0x30)
+						map.enemy[map.enemies]->weapon.normal.right=shape_copy_copy(model.enemy_right);
 					map.enemies++;
 					break;
 				default:
@@ -93,9 +95,17 @@ void map_load(int i) {
 		}
 	}
 	map.current=i;
-	player_spawn(64, 128, model.player, model.gun);
+	player_spawn(64, 128, model.player, model.gun, model.grenade);
 	camera_x = 0;
 	camera_scroll_speed = CAMERA_SCROLL_SPEED;
+}
+
+void map_cleanup() {
+	int i;
+	for(i=0; i<map.enemies; i++)
+		if(map.enemy[i]->type==ENEMY_TYPE_NORMAL)
+			map.enemy[i]->weapon.normal.right=shape_copy_free(map.enemy[i]->weapon.normal.right);
+	map.enemies=0;
 }
 
 ENEMY *map_enemy_collide(SHAPE_COPY *shape, int x, int y) {
@@ -125,6 +135,9 @@ void map_render() {
 		enemy_render(map.enemy[i]);
 }
 
+unsigned int map_get_tile(int x, int y, int layer) {
+	return map.map[map.current]->layer[layer].tilemap->data[(y/TILE_SIZE)*map.map[map.current]->layer[layer].tilemap->w+x/TILE_SIZE];
+}
 
 MAP_SLOPE map_slope_direction(int dir, int section, int line) {
 	dir*=-1;

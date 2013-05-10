@@ -75,7 +75,7 @@ void bullet_loop(BULLET_LIST **list_p) {
 	return;
 }
 
-GRENADE_LIST *grenade_add(GRENADE_LIST *list, int x, int y, int angle, SHAPE *grenade) {
+GRENADE_LIST *grenade_add(GRENADE_LIST *list, int x, int y, int angle, int time, SHAPE *grenade) {
 	GRENADE_LIST *new;
 
 	new = malloc(sizeof(GRENADE_LIST));
@@ -84,7 +84,7 @@ GRENADE_LIST *grenade_add(GRENADE_LIST *list, int x, int y, int angle, SHAPE *gr
 	new->vel_y = (GRENADE_VELOCITY * d_util_sin(angle)) >> 16;
 	new->x = x * 1000;
 	new->y = y * 1000;
-	new->life=0;
+	new->life=time;
 	new->copy = shape_copy_copy(grenade);
 	return new;
 }
@@ -116,10 +116,10 @@ void grenade_loop(GRENADE_LIST **list_p) {
 		l->y+=l->vel_y;
 		l->vel_y+=256;
 		
-		l->life += d_last_frame_time();
+		l->life -= d_last_frame_time();
 		if(l->x<6000)
 			goto dealloc;
-		if (l->life >= GRENADE_LIFE) {
+		if (l->life<=0) {
 			d_sound_play(sound.explosion, 0, 127, 127, 0);
 			particle_emitter_new(200, 1000, 1, 3000, 255, 0, 0, PARTICLE_TYPE_PULSE, l->x/1000, l->y/1000, 50, 0, 3600);
 			particle_emitter_new(200, 1000, 1, 3000, 255, 255, 0, PARTICLE_TYPE_PULSE, l->x/1000, l->y/1000, 50, 0, 3600);

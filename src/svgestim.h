@@ -41,6 +41,7 @@ struct {
 	SHAPE *bullet;
 	SHAPE *grenade;
 	SHAPE *enemy[16];
+	SHAPE *enemy_right;
 	SHAPE *explosion;
 } model;
 
