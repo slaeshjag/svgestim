@@ -8,14 +8,14 @@ typedef struct {
 	int			vel_y;
 	int			gun_angle;
 	
-	SHAPE_COPY		*shape;
+	SHAPE_SPRITE	*shape;
 	SHAPE_COPY		*gun;
 	BULLET_LIST		*bullet;
 } PLAYER;
 
 
 
-int player_spawn(int x, int y, SHAPE *shape, SHAPE *gun);
+int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun);
 int player_loop(DARNIT_KEYS *keys);
 void player_render();
 void player_kill();

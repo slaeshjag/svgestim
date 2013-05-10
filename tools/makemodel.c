@@ -55,6 +55,7 @@ int main(int argc, char **argv) {
 	}
 	printf(" %i %i\n", startx/ZOOM-w/2, starty/ZOOM-h/2);
 	printf("LINES		%i\n", lines);
+	printf("DURATION	200\n");
 	
 	d_quit();
 	return 0;

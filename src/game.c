@@ -3,7 +3,7 @@
 
 void game_init() {
 	shape_init("models.stz");
-	model.player=shape_load("player");
+	model.player=shapesprite_new("player walk", 2);
 	model.gun=shape_load("gun");
 	model.bullet=shape_load("bullet");
 }

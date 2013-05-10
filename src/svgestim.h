@@ -7,12 +7,12 @@
 
 #include "util.h"
 #include "shapeloader.h"
+#include "shapesprite.h"
 #include "bullet.h"
 #include "player.h"
 #include "transform.h"
 #include "enemy.h"
 #include "particle.h"
-#include "shapesprite.h"
 
 #define TEXT_STATIC(var, font, text, x, y) (d_text_surface_string_append((var)=d_text_surface_new((font), 64, 800, (x), (y)), (text)))
 #define TEXT_INDENT(var, text, x) \
@@ -35,7 +35,7 @@ struct {
 } font;
 
 struct {
-	SHAPE *player;
+	SHAPE_SPRITE *player;
 	SHAPE *gun;
 	SHAPE *bullet;
 } model;
