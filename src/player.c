@@ -21,6 +21,7 @@ int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun) {
 	player->y = y * 1000;
 	player->vel_x = 0;
 	player->vel_y = 0;
+	player->health=100;
 	
 	player->gun_angle=0;
 	player->bullet=NULL;
@@ -31,16 +32,12 @@ int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun) {
 
 /* Bästa Snyggkoden™ i stan! */
 int player_loop(DARNIT_KEYS *keys) {
-<<<<<<< HEAD
 	SHAPE_COPY *shape;
-=======
 	DARNIT_KEYS set;
->>>>>>> 9b07b18c96f8acdc76133b85da8ec6c5ded1a032
 	static int shoot_key=0;
 	if (!player)
 		return 0;
 	shape=shapesprite_get_current_shape(player->shape);
-	
 	
 	if(keys->up)
 		player->gun_angle=-450;
@@ -86,16 +83,11 @@ int player_loop(DARNIT_KEYS *keys) {
 	if (player->x < 0)
 		player->x = 0;
 
-<<<<<<< HEAD
-	if (!map_collide(shape->coord, shape->lines, player->x / 1000, player->y / 1000))
-		player->y += 64 * d_last_frame_time();
-=======
-	if (!map_collide(player->shape->coord, player->shape->lines, player->x / 1000, player->y / 1000) || player->vel_y < 0)
+	if (!map_collide(shape->coord, shape->lines, player->x / 1000, player->y / 1000) || player->vel_y < 0)
 		player->y += player->vel_y * d_last_frame_time() / 1000;
 	else {
 		player->vel_y = 0;
 	}
->>>>>>> 9b07b18c96f8acdc76133b85da8ec6c5ded1a032
 
 	if (player->x / 1000 >= PLAYER_KILLZONE) {
 		player_kill();

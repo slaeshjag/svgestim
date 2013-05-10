@@ -5,6 +5,7 @@ typedef struct {
 	int			x;
 	int			y;
 	int			behaviour;
+	int			health;
 
 	SHAPE_COPY		*shape;
 } ENEMY;

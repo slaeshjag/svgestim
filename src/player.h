@@ -7,6 +7,7 @@ typedef struct {
 	int			vel_x;
 	int			vel_y;
 	int			gun_angle;
+	int			health;
 	
 	SHAPE_SPRITE	*shape;
 	SHAPE_COPY		*gun;

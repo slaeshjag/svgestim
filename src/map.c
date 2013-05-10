@@ -94,6 +94,14 @@ void map_load(int i) {
 	player_spawn(64, 128, model.player, model.gun);
 }
 
+ENEMY *map_enemy_collide(SHAPE *shape, int x, int y) {
+	int i;
+	for(i=0; i<map.enemies; i++)
+		if(shape_collides(map.enemy[i]->shape, map.enemy[i]->x, map.enemy[i]->y, shape, x, y))
+			return map.enemy[i];
+	return NULL;
+}
+
 void map_loop() {
 	int i;
 	for(i=0; i<map.enemies; i++) {

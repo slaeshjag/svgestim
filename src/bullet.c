@@ -46,6 +46,7 @@ void bullet_loop(BULLET_LIST **list_p) {
 			continue;
 		}
 		/* TODO: Test collision with all entities here */
+		
 		list = &l->next;
 	}	
 
