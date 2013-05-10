@@ -44,6 +44,7 @@ struct {
 	SHAPE *enemy[16];
 	SHAPE *enemy_right;
 	SHAPE *explosion;
+	SHAPE *powerup[16];
 } model;
 
 struct {
@@ -53,6 +54,7 @@ struct {
 	DARNIT_SOUND *enemy_kill;
 	DARNIT_SOUND *powerup;
 	DARNIT_SOUND *powerup_small;
+	DARNIT_SOUND *music;
 } sound;
 
 DARNIT_PLATFORM platform;

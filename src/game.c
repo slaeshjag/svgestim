@@ -11,6 +11,8 @@ void game_init() {
 	model.grenade=shape_load("grenade");
 	model.enemy[0]=shape_load("enemy_left");
 	model.enemy[1]=shape_load("enemy_gunner");
+	model.enemy[2]=shape_load("enemy_grenadier");
+	model.enemy[3]=shape_load("tank");
 	model.enemy_right=shape_load("enemy_right");
 	model.explosion=shape_load("explosion");
 	
@@ -20,6 +22,10 @@ void game_init() {
 	sound.enemy_kill=d_sound_streamed_load("enemy_kill.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
 	sound.powerup=d_sound_streamed_load("powerup.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
 	sound.powerup_small=d_sound_streamed_load("powerup_small.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
+	
+	sound.music=d_sound_tracked_load("music.mod", DARNIT_AUDIO_STREAM, DARNIT_AUDIO_STEREO);
+	if(sound.music)
+		d_sound_play(sound.music, 0, 127, 127, 0);
 	
 	grenade_explosion=shape_copy_copy(model.explosion);
 }

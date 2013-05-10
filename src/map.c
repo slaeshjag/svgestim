@@ -15,6 +15,15 @@
 #define ENEMIES_MAX 1024
 #define	CAMERA_SCROLL_SPEED	48
 
+static struct {
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+} powerup_color[16]={
+	{0xFF, 0x00, 0x00},
+	{0x00, 0xFF, 0x00},
+};
+
 static DARNIT_TILESHEET *bogus_tilesheet;
 static struct {
 	unsigned int current;
@@ -25,6 +34,8 @@ static struct {
 	int sections;
 	ENEMY *enemy[ENEMIES_MAX];
 	unsigned int enemies;
+	POWERUP powerup[50];
+	int powerups;
 } map;
 
 void map_init() {
@@ -41,6 +52,7 @@ void map_init() {
 
 void map_load(int i) {
 	int x, y, layer, tmp, x2, y2;
+	map.powerups=0;
 	map.sections=-1;
 	map.lines[0]=0;
 	
@@ -56,6 +68,14 @@ void map_load(int i) {
 					if(tmp==0x30)
 						map.enemy[map.enemies]->weapon.normal.right=shape_copy_copy(model.enemy_right);
 					map.enemies++;
+					break;
+				case 0x50:
+					map.powerup[map.powerups].x=x*TILE_SIZE;
+					map.powerup[map.powerups].y=y*TILE_SIZE;
+					map.powerup[map.powerups].type=tmp&0xF;
+					map.powerup[map.powerups].taken=0;
+					map.powerup[map.powerups].shape=shape_copy_copy(model.powerup[tmp&0xF]);
+					map.powerups++;
 					break;
 				default:
 					break;
@@ -100,12 +120,37 @@ void map_load(int i) {
 	camera_scroll_speed = CAMERA_SCROLL_SPEED;
 }
 
+void map_check_powerup(int x, int y) {
+	int i;
+	for(i=0; i<map.powerups; i++) {
+		if(x>map.powerup[i].x-35&&x<map.powerup[i].x+50&&y>map.powerup[i].y-50&&y<map.powerup[i].y+50&&(!map.powerup[i].taken)) {
+			map.powerup[i].taken=1;
+			switch(map.powerup[i].type) {
+				case POWERUP_HP:
+					d_sound_play(sound.powerup, 0, 127, 127, 0);
+					player->health=(player->health+50)%100;
+					break;
+				case POWERUP_GRENADES:
+					d_sound_play(sound.powerup_small, 0, 127, 127, 0);
+					player->grenades=(player->grenades+2)%10;
+				default:
+					break;
+			}
+		}
+	}
+}
+
 void map_cleanup() {
 	int i;
 	for(i=0; i<map.enemies; i++)
 		if(map.enemy[i]->type==ENEMY_TYPE_NORMAL)
 			map.enemy[i]->weapon.normal.right=shape_copy_free(map.enemy[i]->weapon.normal.right);
 	map.enemies=0;
+	
+	for(i=0; i<map.powerups; i++) {
+		shape_copy_free(map.powerup[i].shape);
+	}
+	map.powerups=0;
 }
 
 ENEMY *map_enemy_collide(SHAPE_COPY *shape, int x, int y) {
@@ -133,6 +178,13 @@ void map_render() {
 	
 	for(i=0; i<map.enemies; i++)
 		enemy_render(map.enemy[i]);
+	
+	for(i=0; i<map.powerups; i++) {
+		d_render_tint(powerup_color[i].r, powerup_color[i].g, powerup_color[i].b, 0xFF);
+		if(!map.powerup[i].taken)
+			shape_copy_render(map.powerup[i].shape);
+	}
+	d_render_tint(0xFF, 0xFF, 0xFF, 0xFF);
 }
 
 unsigned int map_get_tile(int x, int y, int layer) {

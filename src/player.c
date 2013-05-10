@@ -156,7 +156,7 @@ int player_loop(DARNIT_KEYS *keys) {
 		shapesprite_animate(player->shape);
 	}
 
-
+	map_check_powerup(player->x/1000+camera_x/1000, player->y);
 	score++;
 
 	return 1;

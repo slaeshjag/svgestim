@@ -13,7 +13,21 @@ typedef enum {
 	MAP_SLOPE_VERTICAL
 } MAP_SLOPE;
 
+typedef enum {
+	POWERUP_HP,
+	POWERUP_GRENADES,
+	POWERUPS,
+} POWERUP_TYPE;
 
+typedef struct {
+	POWERUP_TYPE type;
+	int x;
+	int y;
+	int taken;
+	SHAPE_COPY *shape;
+} POWERUP;
+
+void map_check_powerup(int x, int y);
 void map_init();
 void map_load(int i);
 void map_loop();
