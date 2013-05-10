@@ -98,7 +98,7 @@ void map_load(int i) {
 ENEMY *map_enemy_collide(SHAPE_COPY *shape, int x, int y) {
 	int i;
 	for(i=0; i<map.enemies; i++)
-		if(shape_copy_collides(map.enemy[i]->shape, map.enemy[i]->x, map.enemy[i]->y, shape, x, y))
+		if(map.enemy[i]->health>0&&shape_copy_collides(map.enemy[i]->shape, map.enemy[i]->x, map.enemy[i]->y, shape, x, y))
 			return map.enemy[i];
 	return NULL;
 }

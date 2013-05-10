@@ -49,7 +49,6 @@ void bullet_loop(BULLET_LIST **list_p) {
 		}
 		/* TODO: Test collision with all entities here */
 		if((enemy=map_enemy_collide(l->copy, l->x, l->y))) {
-			printf("blolololol\n");
 			enemy->health-=10;
 			*list = l->next;
 			shape_copy_free(l->copy);

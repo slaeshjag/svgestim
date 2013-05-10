@@ -85,7 +85,27 @@ SHAPE_COPY *shape_copy_copy(SHAPE *shape) {
 }
 
 int shape_copy_collides(SHAPE_COPY *shape1, int x1, int y1, SHAPE_COPY *shape2, int x2, int y2) {
-	return collision_test(shape1->rot, shape1->lines, x1, y1, shape2->rot, shape2->lines, x2, y2);
+	int i;
+	int buf[4];
+	if(collision_test(shape1->rot, shape1->lines, x1/1000, y1/1000, shape2->rot, shape2->lines, x2/1000, y2/1000))
+		return 1;
+	buf[0]=shape1->rot[0];
+	buf[1]=shape1->rot[1];
+	for(i=1; i<shape1->lines; i++) {
+		buf[2]=shape1->rot[i*2];
+		buf[3]=shape1->rot[i*2+1];
+		if(collision_test(buf, 1, x1/1000, y1/1000, shape2->rot, shape2->lines, x2/1000, y2/1000))
+			return 1;
+	}
+	buf[0]=shape2->rot[0];
+	buf[1]=shape2->rot[1];
+	for(i=1; i<shape2->lines; i++) {
+		buf[2]=shape2->rot[i*2];
+		buf[3]=shape2->rot[i*2+1];
+		if(collision_test(shape1->rot, shape1->lines, x1/1000, y1/1000, buf, 1, x2/1000, y2/1000))
+			return 1;
+	}
+	return 0;
 }
 
 void shape_copy_render(SHAPE_COPY *copy) {
