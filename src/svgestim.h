@@ -55,6 +55,7 @@ struct {
 } sound;
 
 DARNIT_PLATFORM platform;
+int score;
 
 void gamestate(GAMESTATE state);
 GAMESTATE gamestate_current();

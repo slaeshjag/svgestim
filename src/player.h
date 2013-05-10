@@ -15,6 +15,9 @@ typedef struct {
 	SHAPE_COPY		*grenade_shape;
 	BULLET_LIST		*bullet;
 	GRENADE_LIST		*grenade;
+	DARNIT_RECT		*healthbar;
+	DARNIT_TEXT_SURFACE	*scoretext;
+	DARNIT_TEXT_SURFACE	*grenadestext;
 } PLAYER;
 
 

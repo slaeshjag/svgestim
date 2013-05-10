@@ -52,6 +52,7 @@ void bullet_loop(BULLET_LIST **list_p) {
 		/* TODO: Test collision with all entities here */
 		if((enemy=map_enemy_collide(l->copy, l->x, l->y))&&l->owner==BULLET_OWNER_PLAYER) {
 			enemy->health-=10;
+			score += 1000;
 			*list = l->next;
 			shape_copy_free(l->copy);
 			free(l);
@@ -122,8 +123,10 @@ void grenade_loop(GRENADE_LIST **list_p) {
 			d_sound_play(sound.explosion, 0, 127, 127, 0);
 			particle_emitter_new(200, 1000, 1, 3000, 255, 0, 0, PARTICLE_TYPE_PULSE, l->x/1000, l->y/1000, 50, 0, 3600);
 			particle_emitter_new(200, 1000, 1, 3000, 255, 255, 0, PARTICLE_TYPE_PULSE, l->x/1000, l->y/1000, 50, 0, 3600);
-			if((enemy=map_enemy_collide(grenade_explosion, l->x, l->y)))
+			if((enemy=map_enemy_collide(grenade_explosion, l->x, l->y))) {
+				score += 5000;
 				enemy->health-=70;
+			}
 			if(shape_copy_collides(grenade_explosion, l->x, l->y, shapesprite_get_current_shape(player->shape), player->x, player->y)) {
 				while(*list) {
 					*list = l->next;

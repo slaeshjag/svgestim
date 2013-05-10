@@ -2,6 +2,7 @@
 #include "map.h"
 
 #define	LOCAL_NAMESPACE
+#define	PLAYER_HEALTH_BAR_HEIGHT	24
 #include "player.h"
 
 
@@ -28,8 +29,33 @@ int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun, SHAPE *grenade) 
 	player->gun_angle=0;
 	player->bullet=NULL;
 	player->grenade=NULL;
+	player->healthbar = d_render_rect_new(1);
+	player->scoretext = d_text_surface_new(font.vectroid, 32, 400, 400, 0);
+	player->grenadestext = d_text_surface_new(font.vectroid, 32, 400, 400, 32);
 	
 	return 1;
+}
+
+void player_draw_stat() {
+	char buff[32];
+
+	sprintf(buff, "Score: %.8i\n", score);
+	d_text_surface_reset(player->scoretext);
+	d_text_surface_string_append(player->scoretext, buff);
+
+	sprintf(buff, "Grenades: %.2i", player->grenades);
+	d_text_surface_reset(player->grenadestext);
+	d_text_surface_string_append(player->grenadestext, buff);
+
+	d_render_rect_move(player->healthbar, 0, 0, 0, player->health * 2, PLAYER_HEALTH_BAR_HEIGHT);
+	d_render_tint(255 - player->health * 255 / 100, player->health * 255 / 100, 0, 255);
+	d_render_offset(0, 0);
+	d_render_rect_draw(player->healthbar, 1);
+	d_render_tint(255, 255, 255, 255);
+	d_text_surface_draw(player->scoretext);
+	d_text_surface_draw(player->grenadestext);
+
+	return;
 }
 
 static int grenade_time=0;
@@ -130,6 +156,9 @@ int player_loop(DARNIT_KEYS *keys) {
 		shapesprite_animate(player->shape);
 	}
 
+
+	score++;
+
 	return 1;
 }
 
@@ -156,6 +185,7 @@ void player_render() {
 		return;
 	bullet_loop(&player->bullet);
 	grenade_loop(&player->grenade);
+	player_draw_stat();
 	return;
 }
 
@@ -169,12 +199,13 @@ void player_hurt(int damage) {
 void player_kill() {
 	while(player->bullet)
 		bullet_remove(&player->bullet, player->bullet);
-	while(player->grenade)
-		grenade_remove(&player->grenade, player->grenade);
 	shape_copy_free(player->gun);
-	shape_copy_free(player->grenade_shape);
+	d_render_rect_free(player->healthbar);
+	d_text_surface_free(player->scoretext);
+	d_text_surface_free(player->grenadestext);
 	free(player);
 	player = NULL;
 	gamestate(GAMESTATE_GAMEOVER);
+
 	return;
 }
