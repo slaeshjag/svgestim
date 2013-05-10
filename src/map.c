@@ -157,7 +157,7 @@ MAP_SLOPE map_collide_dir(int *obj, int lines, int x1, int y1, int dir) {
 	
 	for(i=0; i<map.lines[section1]; i++) {
 		if(map.line_coord[section1][i].x1 == map.line_coord[section1][i].x2)
-			if(collision_test((void *) &map.line_coord[section1][i], 1, 0, 0, obj, lines, x1, y1))
+			if(collision_test((void *) &map.line_coord[section1][i], 1, 0, 1, obj, lines, x1, y1))
 				return map_slope_direction(dir, section1, i);
 	}
 	for(i=0; i<map.lines[section1]; i++) {
@@ -168,7 +168,7 @@ MAP_SLOPE map_collide_dir(int *obj, int lines, int x1, int y1, int dir) {
 		return -1;
 	for(i=0; i<map.lines[section2]; i++) {
 		if(map.line_coord[section2][i].x1 == map.line_coord[section2][i].x2)
-			if(collision_test((void *) &map.line_coord[section2][i], 1, 0, 0, obj, lines, x1, y1))
+			if(collision_test((void *) &map.line_coord[section2][i], 1, 0, 1, obj, lines, x1, y1))
 				return map_slope_direction(dir, section2, i);
 	}
 	for(i=0; i<map.lines[section2]; i++) {
