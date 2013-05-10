@@ -9,8 +9,8 @@ BULLET_LIST *bullet_add(BULLET_LIST *list, int x, int y, int angle, SHAPE *bulle
 	new->vel_y = (BULLET_VELOCITY * d_util_sin(angle)) >> 16;
 	new->x = x * 1000;
 	new->y = y * 1000;
+	new->life=0;
 	new->copy = shape_copy_copy(bullet);
-
 	return new;
 }
 
@@ -29,27 +29,24 @@ void bullet_remove(BULLET_LIST **list, BULLET_LIST *remove) {
 
 
 void bullet_loop(BULLET_LIST **list_p) {
-	BULLET_LIST *list, **orig;
+	BULLET_LIST **list, *l;
+	
+	for (list = list_p; *list;) {
+		l=*list;
+		d_render_offset(-(l->x / 1000), -(l->y / 1000));
+		shape_copy_render(l->copy);
+		l->x+=l->vel_x;
+		l->y+=l->vel_y;
 
-	orig = list_p;
-	list = *list_p;
-
-	for (; list;) {
-		d_render_offset(-(list->x / 1000), -(list->y / 1000));
-		shape_copy_render(list->copy);
-
-		list->life += d_last_frame_time();
-		if (list->life >= BULLET_LIFE) {
-			list_p = &(*list_p)->next;
-			bullet_remove(orig, list);
-			list = *list_p;
+		l->life += d_last_frame_time();
+		if (l->life >= BULLET_LIFE) {
+			*list = l->next;
+			shape_copy_free(l->copy);
+			free(l);
 			continue;
 		}
-			
-		list_p = &(*list_p)->next;
-		list = *list_p;
-
 		/* TODO: Test collision with all entities here */
+		list = &l->next;
 	}	
 
 	d_render_offset(0, 0);

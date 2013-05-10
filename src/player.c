@@ -22,20 +22,31 @@ int player_spawn(int x, int y, SHAPE *shape, SHAPE *gun) {
 	player->vel_x = 0;
 	player->vel_y = 0;
 	
+	player->gun_angle=0;
+	player->bullet=NULL;
+	
 	return 1;
 }
 
 
 int player_loop(DARNIT_KEYS *keys) {
+	static int shoot_key=0;
 	if (!player)
 		return 0;
 	
 	if(keys->up)
-		player->aim=AIM_UP;
+		player->gun_angle=-450;
 	else if(keys->down)
-		player->aim=AIM_DOWN;
+		player->gun_angle=450;
 	else
-		player->aim=AIM_NORMAL;
+		player->gun_angle=0;
+	
+	if(keys->a&&!shoot_key) {
+		player->bullet=bullet_add(player->bullet, player->x/1000, player->y/1000, player->gun_angle, model.bullet);
+		particle_emitter_new(30, 100, 8000, 10000, 255, 0, 0, PARTICLE_TYPE_PULSE, player->x/1000, player->y/1000, 0, player->gun_angle-100, player->gun_angle+100);
+		particle_emitter_new(30, 100, 8000, 10000, 255, 255, 0, PARTICLE_TYPE_PULSE, player->x/1000, player->y/1000, 0, player->gun_angle-100, player->gun_angle+100);
+	}
+	shoot_key=keys->a;
 	
 	if (keys->left)
 		player->vel_x -= (PLAYER_ACCELERATION * d_last_frame_time()) / 1000;
@@ -67,22 +78,18 @@ int player_loop(DARNIT_KEYS *keys) {
 
 
 void player_render() {
-	int gun_angle=0;
 	if(!player)
 		return;
 	
-	if(player->aim==AIM_UP)
-		gun_angle=-450;
-	else if(player->aim==AIM_DOWN)
-		gun_angle=450;
 	d_render_offset(-(player->x / 1000), -(player->y / 1000));
 	shape_copy_render(player->shape);
 	
 	d_render_offset(-(player->x / 1000)-4, -(player->y / 1000)+6);
-	shape_copy_rotate(player->gun, gun_angle);
+	shape_copy_rotate(player->gun, player->gun_angle);
 	shape_copy_render(player->gun);
-	shape_copy_rotate(player->gun, -gun_angle);
+	shape_copy_rotate(player->gun, -player->gun_angle);
 	d_render_offset(0, 0);
+	bullet_loop(&player->bullet);
 	return;
 }
 

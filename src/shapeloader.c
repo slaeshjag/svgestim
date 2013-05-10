@@ -25,7 +25,7 @@ SHAPE *shape_load(const char *name) {
 	
 	shape->lines = atoi(d_stringtable_entry(shape_table, "LINES"));
 	shape->duration = atoi(d_stringtable_entry(shape_table, "DURATION"));
-	shape->coordinate = malloc(sizeof(int) * 2 * shape->lines + 2);
+	shape->coordinate = malloc(sizeof(int) * (2 * shape->lines + 2));
 	d_util_string_to_int_array(d_stringtable_entry(shape_table, "COORDINATES"), " ", shape->coordinate, shape->lines * 2 + 2);
 	d_stringtable_section_unload(shape_table, name);
 

@@ -7,11 +7,11 @@
 
 #include "util.h"
 #include "shapeloader.h"
+#include "bullet.h"
 #include "player.h"
 #include "transform.h"
 #include "enemy.h"
 #include "particle.h"
-#include "bullet.h"
 #include "shapesprite.h"
 
 #define TEXT_STATIC(var, font, text, x, y) (d_text_surface_string_append((var)=d_text_surface_new((font), 64, 800, (x), (y)), (text)))
@@ -37,6 +37,7 @@ struct {
 struct {
 	SHAPE *player;
 	SHAPE *gun;
+	SHAPE *bullet;
 } model;
 
 DARNIT_PLATFORM platform;
