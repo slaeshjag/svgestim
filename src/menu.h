@@ -12,4 +12,6 @@ void gameover_render();
 void pause_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse);
 void pause_render();
 
+void instructions_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse);
+void instructions_render();
 #endif

@@ -6,6 +6,7 @@
 static GAMESTATE _gamestate=GAMESTATE_MENU;
 static void (*render[GAMESTATES])()={
 	[GAMESTATE_MENU]=menu_render,
+	[GAMESTATE_INSTRUCTIONS]=instructions_render,
 	[GAMESTATE_GAME]=game_render,
 	[GAMESTATE_GAMEOVER]=gameover_render,
 	[GAMESTATE_PAUSE]=pause_render,
@@ -13,6 +14,7 @@ static void (*render[GAMESTATES])()={
 
 static void (*handle[GAMESTATES])(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse)={
 	[GAMESTATE_MENU]=menu_handle,
+	[GAMESTATE_INSTRUCTIONS]=instructions_handle,
 	[GAMESTATE_GAME]=game_handle,
 	[GAMESTATE_GAMEOVER]=gameover_handle,
 	[GAMESTATE_PAUSE]=pause_handle,
@@ -31,6 +33,21 @@ static DARNIT_INPUT_MAP menu_keymap_handheld={
 	.y=TPW_KEY_4,
 };
 
+static DARNIT_INPUT_MAP game_keymap={
+	.up=TPW_KEY_UP,
+	.down=TPW_KEY_DOWN,
+	.left=TPW_KEY_LEFT,
+	.right=TPW_KEY_RIGHT,
+	.a=TPW_KEY_x,
+	.b=TPW_KEY_c,
+	.x=TPW_KEY_LSHIFT,
+	.y=TPW_KEY_SPACE,
+	.l=TPW_KEY_z,
+	.r=TPW_KEY_RSHIFT,
+	.start=TPW_KEY_RETURN,
+	.select=TPW_KEY_ESCAPE,
+};
+
 void gamestate(GAMESTATE state) {
 	DARNIT_KEYS k;
 	switch(_gamestate) {
@@ -38,7 +55,7 @@ void gamestate(GAMESTATE state) {
 			if(state!=GAMESTATE_PAUSE)
 				map_cleanup();
 		case GAMESTATE_MENU:
-			d_keymapping_reset();
+			d_keymapping_set(game_keymap);
 			break;
 		default:
 			break;
