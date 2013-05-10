@@ -1,4 +1,5 @@
 #include "svgestim.h"
+#include "map.h"
 
 BULLET_LIST *bullet_add(BULLET_LIST *list, int x, int y, int angle, SHAPE *bullet) {
 	BULLET_LIST *new;
@@ -30,6 +31,7 @@ void bullet_remove(BULLET_LIST **list, BULLET_LIST *remove) {
 
 void bullet_loop(BULLET_LIST **list_p) {
 	BULLET_LIST **list, *l;
+	ENEMY *enemy;
 	
 	for (list = list_p; *list;) {
 		l=*list;
@@ -46,6 +48,14 @@ void bullet_loop(BULLET_LIST **list_p) {
 			continue;
 		}
 		/* TODO: Test collision with all entities here */
+		if((enemy=map_enemy_collide(l->copy, l->x, l->y))) {
+			printf("blolololol\n");
+			enemy->health-=10;
+			*list = l->next;
+			shape_copy_free(l->copy);
+			free(l);
+			continue;
+		}
 		
 		list = &l->next;
 	}	

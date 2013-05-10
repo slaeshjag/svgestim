@@ -3,6 +3,7 @@
 #include "transform.h"
 #include "player.h"
 #include "enemy.h"
+#include "shapeloader.h"
 
 #define MAX(a, b) ((a)>(b)?(a):(b))
 #define MIN(a, b) ((a)<(b)?(a):(b))
@@ -94,10 +95,10 @@ void map_load(int i) {
 	player_spawn(64, 128, model.player, model.gun);
 }
 
-ENEMY *map_enemy_collide(SHAPE *shape, int x, int y) {
+ENEMY *map_enemy_collide(SHAPE_COPY *shape, int x, int y) {
 	int i;
 	for(i=0; i<map.enemies; i++)
-		if(shape_collides(map.enemy[i]->shape, map.enemy[i]->x, map.enemy[i]->y, shape, x, y))
+		if(shape_copy_collides(map.enemy[i]->shape, map.enemy[i]->x, map.enemy[i]->y, shape, x, y))
 			return map.enemy[i];
 	return NULL;
 }

@@ -84,8 +84,8 @@ SHAPE_COPY *shape_copy_copy(SHAPE *shape) {
 	return copy;
 }
 
-int shape_collides(SHAPE *shape1, int x1, int y1, SHAPE *shape2, int x2, int y2) {
-	return collision_test(shape1->coordinate, shape1->lines, x1, y1, shape2->coordinate, shape2->lines, x2, y2);
+int shape_copy_collides(SHAPE_COPY *shape1, int x1, int y1, SHAPE_COPY *shape2, int x2, int y2) {
+	return collision_test(shape1->rot, shape1->lines, x1, y1, shape2->rot, shape2->lines, x2, y2);
 }
 
 void shape_copy_render(SHAPE_COPY *copy) {
