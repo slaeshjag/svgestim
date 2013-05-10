@@ -61,7 +61,7 @@ static int _collision_test(POINT a0, POINT a1, POINT b0, POINT b1) {
 				   || (b0.x <= a1.x && a1.x <= b1.x);
  
 		// different y intercepts; no intersection.
-		else return 01;
+		else return 0;
  
 	}
  
