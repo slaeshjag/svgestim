@@ -12,6 +12,8 @@ default:
 	+@make -C src/
 	@echo " [ CD ] res/"
 	+@make -C res/
+	@echo " [ CD ] tools/"
+	+@make -C tools/
 	@echo
 	@echo "*** Build complete ***"
 

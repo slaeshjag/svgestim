@@ -4,6 +4,7 @@
 void game_init() {
 	shape_init("models.stz");
 	model.player=shape_load("player");
+	model.gun=shape_load("gun");
 }
 
 void game_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
