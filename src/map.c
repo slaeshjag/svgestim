@@ -165,6 +165,8 @@ void map_loop() {
 	int i;
 	camera_scroll_speed = CAMERA_SCROLL_SPEED + score / 5000;
 	camera_x += camera_scroll_speed * d_last_frame_time();
+	if (camera_x / 1000 >= map.sections * TILE_SIZE * MAP_SECTION_WIDTH - 800)
+		camera_x = map.sections * TILE_SIZE * MAP_SECTION_WIDTH;
 	for(i=0; i<map.enemies; i++) {
 		enemy_move(map.enemy[i]);
 	}
