@@ -38,12 +38,8 @@ void map_load(int i) {
 	map.sections=0;
 	map.lines[0]=0;
 	
-	for(y=0; y<map.map[i]->layer->tilemap->h; y++)
-		for(x=0; x<map.map[i]->layer->tilemap->w; x++) {
-			if(!(x%(MAP_SECTION_WIDTH))) {
-				map.sections++;
-				map.lines[map.sections]=0;
-			}
+	for(x=0; x<map.map[i]->layer->tilemap->w; x++) {
+		for(y=0; y<map.map[i]->layer->tilemap->h; y++) {
 			for(layer=1; layer<map.map[i]->layers; layer++) {
 				switch(map.map[i]->layer[layer].tilemap->data[y*map.map[i]->layer[layer].tilemap->w+x]) {
 					case 0x90:
@@ -77,6 +73,11 @@ void map_load(int i) {
 				map.lines[map.sections]++;
 			}
 		}
+		if(!(x%(MAP_SECTION_WIDTH))) {
+			map.sections++;
+			map.lines[map.sections]=0;
+		}
+	}
 	map.current=i;
 	player_spawn(64, 128, model.player, model.gun);
 }
@@ -91,9 +92,13 @@ int map_collide(int *obj, int lines, int x1, int y1) {
 	unsigned int section1=0, section2=0;
 	int i;
 	for(i=0; i<lines; i++) {
-		section1=MIN(section1, obj[i*2]);
-		section2=MAX(section1, obj[i*2]);
+		section1=MIN(section1, obj[i*2] + x1);
+		section2=MAX(section2, obj[i*2] + x1);
 	}
+
+	section1 /= MAP_SECTION_WIDTH;
+	section2 /= MAP_SECTION_WIDTH;
+	
 	for(i=0; i<map.lines[section1]; i++) {
 		if(collision_test((void *) &map.line_coord[section1][i], 1, 0, 0, obj, lines, x1, y1))
 			return 1;

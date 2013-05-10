@@ -1,4 +1,5 @@
 #include "svgestim.h"
+#include "map.h"
 
 #define	LOCAL_NAMESPACE
 #include "player.h"
@@ -58,6 +59,9 @@ int player_loop(DARNIT_KEYS *keys) {
 	
 	player->x += player->vel_x * d_last_frame_time() * (keys->l ? 2 : 1);
 	player->y += player->vel_y * d_last_frame_time();
+
+	if (!map_collide(player->shape->coord, player->shape->lines, player->x / 1000, player->y / 1000))
+		player->y += 32 * d_last_frame_time();
 
 	if (player->x / 1000 >= PLAYER_KILLZONE) {
 		player_kill();
