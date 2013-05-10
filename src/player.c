@@ -111,7 +111,7 @@ int player_loop(DARNIT_KEYS *keys) {
 	if (abs(player->vel_x) > PLAYER_SPEED_X_MAX)
 		player->vel_x = (player->vel_x < 0 ? -1 : 1) * PLAYER_SPEED_X_MAX;
 	
-	if (keys->l) {
+	if (keys->l && !player->vel_y) {
 		set = d_keys_zero();
 		set.l = 1;
 		d_keys_set(set);
@@ -132,8 +132,8 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->vel_x*=-1;
 		player->y+=2000;
 	} else if(dir!=MAP_SLOPE_VERTICAL) {
-		if (dir != -1)
-			player->y-=50;
+		//if (dir != -1)
+		//	player->y-=50;
 		player->x += player->vel_x * d_last_frame_time() / 1000;
 	}
 	if (player->x < 32000)
