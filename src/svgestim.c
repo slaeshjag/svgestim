@@ -34,6 +34,9 @@ static DARNIT_INPUT_MAP menu_keymap_handheld={
 void gamestate(GAMESTATE state) {
 	DARNIT_KEYS k;
 	switch(_gamestate) {
+		case GAMESTATE_GAME:
+			if(state!=GAMESTATE_PAUSE)
+				map_cleanup();
 		case GAMESTATE_MENU:
 			d_keymapping_reset();
 			break;

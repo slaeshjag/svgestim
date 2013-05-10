@@ -14,6 +14,10 @@ typedef struct {
 	int			health;
 	
 	union {
+		struct {
+			int dir;
+			SHAPE_COPY *right;
+		} normal;
 		BULLET_LIST *bullet;
 		GRENADE_LIST *grenade;
 	} weapon;
