@@ -78,7 +78,7 @@ void map_load(int i) {
 			}
 		}
 	map.current=i;
-	player_spawn(64, 128, model.player);
+	player_spawn(64, 128, model.player, model.gun);
 }
 
 void map_render() {
