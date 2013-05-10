@@ -119,6 +119,30 @@ void map_render() {
 		enemy_render(map.enemy[i]);
 }
 
+
+MAP_SLOPE map_slope_direction(int dir, int section, int line) {
+	if (map.line_coord[section][line].x1 == map.line_coord[section][line].x2)
+		return MAP_SLOPE_VERTICAL;
+	
+	if (dir < 0) {
+		if (map.line_coord[section][line].y1 < map.line_coord[section][line].y2)
+			return MAP_SLOPE_DOWN;
+		if (map.line_coord[section][line].y1 > map.line_coord[section][line].y2)
+			return MAP_SLOPE_UP;
+		return MAP_SLOPE_NONE;
+	} else {
+		if (map.line_coord[section][line].y1 < map.line_coord[section][line].y2)
+			return MAP_SLOPE_UP;
+		if (map.line_coord[section][line].y1 > map.line_coord[section][line].y2)
+			return MAP_SLOPE_DOWN;
+		return MAP_SLOPE_NONE;
+	}
+
+	return MAP_SLOPE_NONE;
+}
+	
+
+
 int map_collide(int *obj, int lines, int x1, int y1) {
 	unsigned int section1=0, section2=0;
 	int i;

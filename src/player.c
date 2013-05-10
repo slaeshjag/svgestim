@@ -81,7 +81,7 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->vel_y -= PLAYER_JUMP_ACCELERATION;
 	}
 
-	player->vel_y += PLAYER_GRAVITY * d_last_frame_time();
+	player->vel_y += 64 * d_last_frame_time();
 
 	if (abs(player->vel_y) > PLAYER_SPEED_Y_MAX)
 		player->vel_y = (player->vel_y < 0 ? -1 : 1) * PLAYER_SPEED_Y_MAX;

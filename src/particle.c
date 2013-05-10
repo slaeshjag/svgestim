@@ -39,8 +39,6 @@ PARTICLE *particle_emitter_new(int max_particles, int life, int speed_min, int s
 		return p;
 	}
 
-	for (i = 0; i < max_particles; i++)
-		p->particle[i].used = 0;
 	p->max_particles = max_particles;
 	if (type == PARTICLE_TYPE_PULSE)
 		p->max_spawnrate = ~0;
@@ -51,6 +49,12 @@ PARTICLE *particle_emitter_new(int max_particles, int life, int speed_min, int s
 	p->point = d_render_point_new(max_particles, 1);
 	p->life = life;
 	p->particles_in_use = 0;
+	
+	for (i = 0; i < max_particles; i++) {
+		d_render_point_move(p->point, i, ~0, ~0);
+		p->particle[i].used = 0;
+	}
+
 
 	p->angle_min = angle_min;
 	p->angle_max = angle_max;
