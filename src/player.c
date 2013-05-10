@@ -89,7 +89,7 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->vel_y = 0;
 	}
 
-	if (player->x / 1000 >= PLAYER_KILLZONE||map_enemy_collide(shapesprite_get_current_shape(player->shape), player->x, player->y)) {
+	if (/*player->y / 1000 >= PLAYER_KILLZONE||*/map_enemy_collide(shapesprite_get_current_shape(player->shape), player->x, player->y)) {
 		player_kill();
 		return -1;
 	}
