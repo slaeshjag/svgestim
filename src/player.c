@@ -62,7 +62,7 @@ int player_loop(DARNIT_KEYS *keys) {
 		if (abs(player->vel_x) < (PLAYER_ACCELERATION * d_last_frame_time()) / 1000)
 			player->vel_x = 0;
 		else
-			player->vel_x += ((player->vel_x < 0 ? 1 : -1) * (PLAYER_ACCELERATION) * d_last_frame_time()) / 1000;
+			player->vel_x += ((player->vel_x < 0 ? 1 : -1) * (PLAYER_FRICTION) * d_last_frame_time()) / 1000;
 	}
 	if (abs(player->vel_x) > PLAYER_SPEED_X_MAX)
 		player->vel_x = (player->vel_x < 0 ? -1 : 1) * PLAYER_SPEED_X_MAX;
@@ -74,7 +74,7 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->vel_y -= PLAYER_JUMP_ACCELERATION;
 	}
 
-	player->vel_y += 64 * d_last_frame_time();
+	player->vel_y += PLAYER_GRAVITY * d_last_frame_time();
 
 	if (abs(player->vel_y) > PLAYER_SPEED_Y_MAX)
 		player->vel_y = (player->vel_y < 0 ? -1 : 1) * PLAYER_SPEED_Y_MAX;
