@@ -38,19 +38,23 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->aim=AIM_NORMAL;
 	
 	if (keys->left)
-		player->vel_x += PLAYER_ACCELERATION * d_last_frame_time();
+		player->vel_x -= (PLAYER_ACCELERATION * d_last_frame_time()) / 1000;
 	else if (keys->right)
-		player->vel_x -= PLAYER_ACCELERATION * d_last_frame_time();
-	else if (player->vel_x)
-		player->vel_x += (player->vel_x < 0 ? 1 : -1) * (PLAYER_ACCELERATION>>1) * d_last_frame_time();
+		player->vel_x += (PLAYER_ACCELERATION * d_last_frame_time()) / 1000;
+	else if (player->vel_x) {
+		if (abs(player->vel_x) < (PLAYER_ACCELERATION * d_last_frame_time()) / 1000)
+			player->vel_x = 0;
+		else
+			player->vel_x += ((player->vel_x < 0 ? 1 : -1) * (PLAYER_ACCELERATION) * d_last_frame_time()) / 1000;
+	}
 	if (abs(player->vel_x) > PLAYER_SPEED_X_MAX)
 		player->vel_x = (player->vel_x < 0 ? -1 : 1) * PLAYER_SPEED_X_MAX;
 	
-	player->x += player->vel_x * d_last_frame_time() * (keys->l ? 2 : 1);
-	player->y += player->vel_y * d_last_frame_time();
+	player->x += player->vel_x * d_last_frame_time() * (keys->l ? 2 : 1) / 1000;
+	player->y += player->vel_y * d_last_frame_time() / 1000;
 
 	if (!map_collide(player->shape->coord, player->shape->lines, player->x / 1000, player->y / 1000))
-		player->y += 32 * d_last_frame_time();
+		player->y += 64 * d_last_frame_time();
 
 	if (player->x / 1000 >= PLAYER_KILLZONE) {
 		player_kill();
