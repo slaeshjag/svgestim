@@ -23,8 +23,8 @@ void player_kill();
 
 PLAYER				*player;
 
-#define	PLAYER_ACCELERATION	100000
-#define	PLAYER_SPEED_X_MAX	200000
+#define	PLAYER_ACCELERATION	1000
+#define	PLAYER_SPEED_X_MAX	2000000
 #define	PLAYER_KILLZONE		800
 
 #endif
