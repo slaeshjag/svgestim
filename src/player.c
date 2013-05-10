@@ -25,6 +25,7 @@ int player_spawn(int x, int y, SHAPE_SPRITE *shape, SHAPE *gun) {
 	
 	player->gun_angle=0;
 	player->bullet=NULL;
+	player->grenade=NULL;
 	
 	return 1;
 }
@@ -35,6 +36,7 @@ int player_loop(DARNIT_KEYS *keys) {
 	SHAPE_COPY *shape;
 	DARNIT_KEYS set;
 	static int shoot_key=0;
+	static int grenade_key=0;
 	if (!player)
 		return 0;
 	shape=shapesprite_get_current_shape(player->shape);
@@ -52,7 +54,12 @@ int player_loop(DARNIT_KEYS *keys) {
 		particle_emitter_new(30, 100, 8000, 10000, 255, 0, 0, PARTICLE_TYPE_PULSE, x, y, 0, player->gun_angle-100, player->gun_angle+100);
 		particle_emitter_new(30, 100, 8000, 10000, 255, 255, 0, PARTICLE_TYPE_PULSE, x, y, 0, player->gun_angle-100, player->gun_angle+100);
 	}
+	if(keys->b&&!grenade_key) {
+		int x=player->x/1000+28, y=player->y/1000+(player->gun_angle?player->gun_angle/20:0);
+		player->grenade=grenade_add(player->grenade, x, y, player->gun_angle, model.grenade);
+	}
 	shoot_key=keys->a;
+	grenade_key=keys->b;
 	
 	if (keys->left)
 		player->vel_x -= (PLAYER_ACCELERATION * d_last_frame_time()) / 1000;
@@ -80,8 +87,8 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->vel_y = (player->vel_y < 0 ? -1 : 1) * PLAYER_SPEED_Y_MAX;
 
 	player->x += player->vel_x * d_last_frame_time() * (keys->l ? 2 : 1) / 1000;
-	if (player->x < 0)
-		player->x = 0;
+	if (player->x < 32000)
+		player->x = 32000;
 
 	if (!map_collide(shape->coord, shape->lines, player->x / 1000, player->y / 1000) || player->vel_y < 0)
 		player->y += player->vel_y * d_last_frame_time() / 1000;
@@ -113,6 +120,7 @@ void player_render() {
 	shape_copy_rotate(player->gun, -player->gun_angle);
 	d_render_offset(0, 0);
 	bullet_loop(&player->bullet);
+	grenade_loop(&player->grenade);
 	return;
 }
 
