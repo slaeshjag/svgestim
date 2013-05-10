@@ -10,6 +10,7 @@ typedef struct {
 } ENEMY;
 
 ENEMY *enemy_spawn(int x, int y, int behaviour, SHAPE *shape);
-
+void enemy_move(ENEMY *enemy);
+void enemy_render(ENEMY *enemy);
 
 #endif

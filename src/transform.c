@@ -36,12 +36,13 @@ int collision_test(int *obj1, int lines_1, int x1, int y1, int *obj2, int lines_
 			t2 = ((y1_ - y3_) * (x2_ - x3_)) - ((x1_ - x3_) * (y2_ - y1_));
 			t2 <<= 16;
 
-			if (!d) return (!t1 && !t2);
+			if (!d) return 0;
 			t1 /= d;
 			t2 /= d;
 
-			if (t1 >= 0 && t1 <= 32768 && t2 >= 0 && t2 <= 32768)
+			if (t1 >= 0 && t1 <= 32768 && t2 >= 0 && t2 <= 32768) {
 				return j + 1;
+			}
 			
 			continue;
 		}

@@ -12,3 +12,13 @@ ENEMY *enemy_spawn(int x, int y, int behaviour, SHAPE *shape) {
 
 	return enemy;
 }
+
+void enemy_move(ENEMY *enemy) {
+	
+}
+
+void enemy_render(ENEMY *enemy) {
+	d_render_offset(-(enemy->x/1000), -(enemy->y/1000));
+	shape_copy_render(enemy->shape);
+	d_render_offset(0, 0);
+}

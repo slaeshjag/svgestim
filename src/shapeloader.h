@@ -17,6 +17,7 @@ typedef struct {
 	int		min;
 	int		max;
 	int		duration;
+	int		*rot;
 	DARNIT_LINE	*line;
 } SHAPE_COPY;
 

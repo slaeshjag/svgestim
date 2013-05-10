@@ -49,20 +49,18 @@ void shape_cleanup() {
 
 
 void shape_copy_rotate(SHAPE_COPY *copy, int angle) {
-	int i, x1, x2, y1, y2;
+	int i;
 
 	if (!copy)
 		return;
 
-	for (i = 0; i < copy->lines; i++) {
-		x1 = copy->coord[i * 2];
-		x2 = copy->coord[i * 2 + 2];
-		y1 = copy->coord[i * 2 + 1];
-		y2 = copy->coord[i * 2 + 3];
-		rotate_coord(angle, &x1, &y1);
-		rotate_coord(angle, &x2, &y2);
+	memcpy(copy->rot, copy->coord, sizeof(int) * (copy->lines * 2 + 2));
+	i = 0;
+	rotate_coord(angle, &copy->rot[i * 2], &copy->rot[i * 2 + 1]);
+	for (; i < copy->lines; i++) {
+		rotate_coord(angle, &copy->rot[i * 2 + 2], &copy->rot[i * 2 + 3]);
 		if (i < copy->lines)
-			d_render_line_move(copy->line, i, x1, y1, x2, y2);
+			d_render_line_move(copy->line, i, copy->rot[i * 2], copy->rot[i * 2 + 1], copy->rot[i * 2 + 2], copy->rot[i * 2 + 3]);
 	}
 
 	return;
@@ -80,6 +78,7 @@ SHAPE_COPY *shape_copy_copy(SHAPE *shape) {
 	copy->lines = shape->lines;
 	copy->line = d_render_line_new(shape->lines, 1);
 	copy->duration = shape->duration;
+	copy->rot = malloc(sizeof(int) * (copy->lines * 2 + 2));
 	shape_copy_rotate(copy, 0);
 
 	return copy;

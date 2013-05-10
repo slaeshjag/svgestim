@@ -2,6 +2,7 @@
 #include "game.h"
 #include "transform.h"
 #include "player.h"
+#include "enemy.h"
 
 #define MAX(a, b) ((a)>(b)?(a):(b))
 #define MIN(a, b) ((a)<(b)?(a):(b))
@@ -10,6 +11,7 @@
 #define MAP_SECTIONS 128
 #define MAP_SECTION_WIDTH (8*32)
 #define TILE_SIZE 8
+#define ENEMIES_MAX 1024
 
 static DARNIT_TILESHEET *bogus_tilesheet;
 static struct {
@@ -19,6 +21,8 @@ static struct {
 	LINE line_coord[MAP_SECTIONS][MAP_LINES];
 	unsigned int lines[MAP_SECTIONS];
 	unsigned int sections;
+	ENEMY *enemy[ENEMIES_MAX];
+	unsigned int enemies;
 } map;
 
 void map_init() {
@@ -40,6 +44,14 @@ void map_load(int i) {
 	
 	for(x=0; x<map.map[i]->layer->tilemap->w; x++) {
 		for(y=0; y<map.map[i]->layer->tilemap->h; y++) {
+			switch(map.map[i]->layer->tilemap->data[y*map.map[i]->layer->tilemap->w+x]) {
+				case 0x30:
+					map.enemy[map.enemies]=enemy_spawn(x*TILE_SIZE, y*TILE_SIZE, 0, model.enemy);
+					map.enemies++;
+					break;
+				default:
+					break;
+			}
 			for(layer=1; layer<map.map[i]->layers; layer++) {
 				switch(map.map[i]->layer[layer].tilemap->data[y*map.map[i]->layer[layer].tilemap->w+x]) {
 					case 0x90:
@@ -82,10 +94,20 @@ void map_load(int i) {
 	player_spawn(64, 128, model.player, model.gun);
 }
 
+void map_loop() {
+	int i;
+	for(i=0; i<map.enemies; i++) {
+		enemy_move(map.enemy[i]);
+	}
+}
+
 void map_render() {
 	int i;
 	for(i=0; i<map.sections; i++)
 		d_render_line_draw(map.line[i], map.lines[i]);
+	
+	for(i=0; i<map.enemies; i++)
+		enemy_render(map.enemy[i]);
 }
 
 int map_collide(int *obj, int lines, int x1, int y1) {

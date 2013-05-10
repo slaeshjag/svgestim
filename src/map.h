@@ -5,6 +5,7 @@
 
 void map_init();
 void map_load(int i);
+void map_loop();
 void map_render();
 int map_collide(int *obj, int lines, int x1, int y1);
 

@@ -6,9 +6,11 @@ void game_init() {
 	model.player=shapesprite_new("player walk", 2);
 	model.gun=shape_load("gun");
 	model.bullet=shape_load("bullet");
+	model.enemy=shape_load("enemy");
 }
 
 void game_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
+	map_loop();
 	player_loop(keys);
 }
 
