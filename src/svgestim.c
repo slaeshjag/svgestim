@@ -6,6 +6,7 @@
 static GAMESTATE _gamestate=GAMESTATE_MENU;
 static void (*render[GAMESTATES])()={
 	[GAMESTATE_MENU]=menu_render,
+	[GAMESTATE_HIGHSCORE]=highscore_render,
 	[GAMESTATE_INSTRUCTIONS]=instructions_render,
 	[GAMESTATE_GAME]=game_render,
 	[GAMESTATE_GAMEOVER]=gameover_render,
@@ -14,6 +15,7 @@ static void (*render[GAMESTATES])()={
 
 static void (*handle[GAMESTATES])(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse)={
 	[GAMESTATE_MENU]=menu_handle,
+	[GAMESTATE_HIGHSCORE]=highscore_handle,
 	[GAMESTATE_INSTRUCTIONS]=instructions_handle,
 	[GAMESTATE_GAME]=game_handle,
 	[GAMESTATE_GAMEOVER]=gameover_handle,
@@ -76,6 +78,8 @@ void gamestate(GAMESTATE state) {
 			map_load(0);
 			score = 0;
 			break;
+		case GAMESTATE_HIGHSCORE:
+		case GAMESTATE_INSTRUCTIONS:
 		case GAMESTATE_GAMEOVER:
 		case GAMESTATE_PAUSE:
 			memset(&k, 0xFF, sizeof(DARNIT_KEYS));
@@ -98,6 +102,7 @@ static void init() {
 	font.univox=d_font_load("univox.ttf", 32, 512, 512);
 	font.vectroid=d_font_load("vectroid.ttf", 32, 512, 512);
 	
+	highscore_init();
 	menu_init();
 	game_init();
 	//pause_init();

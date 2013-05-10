@@ -1,6 +1,10 @@
 #include "svgestim.h"
 #include "highscore.h"
 
+static struct {
+	DARNIT_TEXT_SURFACE *title;
+	DARNIT_TEXT_SURFACE *text;
+} highscore;
 
 int highscore_init() {
 	DARNIT_FILE *f;
@@ -11,7 +15,8 @@ int highscore_init() {
 		highscore_table[i].score = 0;
 		*highscore_table[i].name = 0;
 	}
-
+	d_text_surface_string_append(highscore.title = d_text_surface_new(font.univox, 64, 800, 16, 16), "highscores");
+	highscore.text = d_text_surface_new(font.vectroid, 600, 800, 40, 150);
 	if (!(f = d_file_open("highscore.txt", "rb"))) {
 		fprintf(stderr, "Warning: Unable to open highscore table\n");
 		return 0;
@@ -21,8 +26,6 @@ int highscore_init() {
 	for (i = 0; i < HIGHSCORE_CAP && !d_file_eof(f); i++) {
 		sscanf(buff, "%i %s\n", &highscore_table[i].score, highscore_table[i].name);
 	}
-
-	highscore_text = d_text_surface_new(font.vectroid, 600, 800, 40, 150);
 
 	return 1;
 }
@@ -80,22 +83,27 @@ void highscore_add(int highscore, char *name) {
 void highscore_render() {
 	char buff[2048];
 	int i;
-
-	d_text_surface_reset(highscore_text);
+	
+	d_text_surface_draw(highscore.title);
+	d_text_surface_reset(highscore.text);
 
 	for (i = 0; i < HIGHSCORE_CAP; i++) {
+		if(!highscore_table[i].score)
+			break;
 		sprintf(buff, "%s", highscore_table[i].name);
-		d_text_surface_string_append(highscore_text, buff);
+		d_text_surface_string_append(highscore.text, buff);
 		sprintf(buff, "%.8i\n", highscore_table[i].score);
-		d_text_surface_offset_next_set(highscore_text, 500);
-		d_text_surface_string_append(highscore_text, buff);
-
+		d_text_surface_offset_next_set(highscore.text, 500);
+		d_text_surface_string_append(highscore.text, buff);
 	}
-
+	d_text_surface_draw(highscore.text);
+	
 	return;
 }
 
 
 void highscore_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
+	if(keys->select||keys->start)
+		gamestate(GAMESTATE_MENU);
 	return;
 }

@@ -20,12 +20,8 @@ void game_init() {
 	sound.enemy_kill=d_sound_streamed_load("enemy_kill.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
 	sound.powerup=d_sound_streamed_load("powerup.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
 	sound.powerup_small=d_sound_streamed_load("powerup_small.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
-
-	highscore_init();
 	
 	grenade_explosion=shape_copy_copy(model.explosion);
-
-	highscore_init();
 }
 
 void game_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {

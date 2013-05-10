@@ -9,8 +9,6 @@ typedef struct {
 	int			score;
 } HIGHSCORE;
 
-
-DARNIT_TEXT_SURFACE	*highscore_text;
 HIGHSCORE highscore_table[HIGHSCORE_CAP];
 
 
