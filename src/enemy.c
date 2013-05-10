@@ -1,4 +1,5 @@
 #include "svgestim.h"
+#include "map.h"
 
 ENEMY *enemy_spawn(int x, int y, ENEMY_TYPE type, SHAPE *shape) {
 	ENEMY *enemy;
@@ -30,9 +31,9 @@ void enemy_move(ENEMY *enemy) {
 void enemy_render(ENEMY *enemy) {
 	if(enemy->health<=0)
 		return;
-	d_render_offset(-(enemy->x/1000), -(enemy->y/1000));
+	d_render_offset(-(enemy->x/1000) + camera_x / 1000, -(enemy->y/1000));
 	shape_copy_render(enemy->shape);
-	d_render_offset(0, 0);
+	d_render_offset(camera_x / 1000, 0);
 	switch(enemy->type) {
 		case ENEMY_TYPE_GUNMAN:
 			if(gamestate_current()==GAMESTATE_GAME)

@@ -37,7 +37,7 @@ void bullet_loop(BULLET_LIST **list_p) {
 	
 	for (list = list_p; *list;) {
 		l=*list;
-		d_render_offset(-(l->x / 1000), -(l->y / 1000));
+		d_render_offset(-(l->x / 1000) + camera_x / 1000, -(l->y / 1000));
 		shape_copy_render(l->copy);
 		l->x+=l->vel_x;
 		l->y+=l->vel_y;
@@ -108,7 +108,7 @@ void grenade_loop(GRENADE_LIST **list_p) {
 	
 	for (list = list_p; *list;) {
 		l=*list;
-		d_render_offset(-(l->x / 1000), -(l->y / 1000));
+		d_render_offset(-(l->x / 1000) + camera_x / 1000, -(l->y / 1000));
 		d_render_tint(0x0, 0xFF, 0x0, 0xFF);
 		shape_copy_render(l->copy);
 		l->x+=l->vel_x;

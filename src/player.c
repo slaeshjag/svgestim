@@ -101,7 +101,7 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->y+=2000;
 	} else if(dir!=MAP_SLOPE_VERTICAL) {
 		if (dir != -1)
-			player->y-50;
+			player->y-=50;
 		player->x += player->vel_x * d_last_frame_time() / 1000;
 	}
 	if (player->x < 32000)
@@ -117,6 +117,9 @@ int player_loop(DARNIT_KEYS *keys) {
 		player_kill();
 		return -1;
 	}
+
+	if (player->x < camera_x + 32000)
+		player->x = camera_x + 32000;
 	if(player->vel_x) {
 		shapesprite_animate(player->shape);
 	}
@@ -129,9 +132,9 @@ void player_render() {
 	if(!player)
 		return;
 	
-	shapesprite_render(player->shape, player->x / 1000, player->y / 1000);
+	shapesprite_render(player->shape, player->x / 1000 - camera_x / 1000, player->y / 1000);
 	
-	d_render_offset(-(player->x / 1000)-4, -(player->y / 1000)+6);
+	d_render_offset(-(player->x / 1000 - camera_x / 1000)-4, -(player->y / 1000)+6);
 	shape_copy_rotate(player->gun, player->gun_angle);
 	shape_copy_render(player->gun);
 	shape_copy_rotate(player->gun, -player->gun_angle);
