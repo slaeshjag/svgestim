@@ -62,7 +62,7 @@ int player_loop(DARNIT_KEYS *keys) {
 		if (abs(player->vel_x) < (PLAYER_ACCELERATION * d_last_frame_time()) / 1000)
 			player->vel_x = 0;
 		else
-			player->vel_x += ((player->vel_x < 0 ? 1 : -1) * (PLAYER_ACCELERATION) * d_last_frame_time()) / 1000;
+			player->vel_x += ((player->vel_x < 0 ? 1 : -1) * (PLAYER_FRICTION) * d_last_frame_time()) / 1000;
 	}
 	if (abs(player->vel_x) > PLAYER_SPEED_X_MAX)
 		player->vel_x = (player->vel_x < 0 ? -1 : 1) * PLAYER_SPEED_X_MAX;
@@ -89,7 +89,7 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->vel_y = 0;
 	}
 
-	if (/*player->y / 1000 >= PLAYER_KILLZONE||*/map_enemy_collide(shapesprite_get_current_shape(player->shape), player->x, player->y)) {
+	if (player->y / 1000 >= PLAYER_KILLZONE||map_enemy_collide(shapesprite_get_current_shape(player->shape), player->x, player->y)) {
 		player_kill();
 		return -1;
 	}
