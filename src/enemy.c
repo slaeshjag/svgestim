@@ -51,7 +51,7 @@ void enemy_render(ENEMY *enemy) {
 		default:
 			break;
 	}
-	d_render_offset(-(enemy->x/1000), -(enemy->y/1000));
+	d_render_offset(-(enemy->x/1000) + camera_x / 1000, -(enemy->y/1000));
 	shape_copy_render(shape);
-	d_render_offset(0, 0);
+	d_render_offset(camera_x / 1000, 0);
 }

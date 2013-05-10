@@ -13,6 +13,7 @@
 #define MAP_SECTION_WIDTH 16
 #define TILE_SIZE 8
 #define ENEMIES_MAX 1024
+#define	CAMERA_SCROLL_SPEED	48
 
 static DARNIT_TILESHEET *bogus_tilesheet;
 static struct {
@@ -95,6 +96,8 @@ void map_load(int i) {
 	}
 	map.current=i;
 	player_spawn(64, 128, model.player, model.gun);
+	camera_x = 0;
+	camera_scroll_speed = CAMERA_SCROLL_SPEED;
 }
 
 void map_cleanup() {
@@ -115,6 +118,7 @@ ENEMY *map_enemy_collide(SHAPE_COPY *shape, int x, int y) {
 
 void map_loop() {
 	int i;
+	camera_x += camera_scroll_speed * d_last_frame_time();
 	for(i=0; i<map.enemies; i++) {
 		enemy_move(map.enemy[i]);
 	}
@@ -122,6 +126,7 @@ void map_loop() {
 
 void map_render() {
 	int i;
+	d_render_offset(camera_x / 1000, 0);
 	for(i=0; i<map.sections; i++)
 		d_render_line_draw(map.line[i], map.lines[i]);
 	
@@ -170,7 +175,7 @@ MAP_SLOPE map_collide_dir(int *obj, int lines, int x1, int y1, int dir) {
 	
 	for(i=0; i<map.lines[section1]; i++) {
 		if(map.line_coord[section1][i].x1 == map.line_coord[section1][i].x2)
-			if(collision_test((void *) &map.line_coord[section1][i], 1, 0, 0, obj, lines, x1, y1))
+			if(collision_test((void *) &map.line_coord[section1][i], 1, 0, 1, obj, lines, x1, y1))
 				return map_slope_direction(dir, section1, i);
 	}
 	for(i=0; i<map.lines[section1]; i++) {
@@ -181,7 +186,7 @@ MAP_SLOPE map_collide_dir(int *obj, int lines, int x1, int y1, int dir) {
 		return -1;
 	for(i=0; i<map.lines[section2]; i++) {
 		if(map.line_coord[section2][i].x1 == map.line_coord[section2][i].x2)
-			if(collision_test((void *) &map.line_coord[section2][i], 1, 0, 0, obj, lines, x1, y1))
+			if(collision_test((void *) &map.line_coord[section2][i], 1, 0, 1, obj, lines, x1, y1))
 				return map_slope_direction(dir, section2, i);
 	}
 	for(i=0; i<map.lines[section2]; i++) {

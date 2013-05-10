@@ -1,4 +1,5 @@
 #include "svgestim.h"
+#include "map.h"
 
 static PARTICLE_LIST *p_list = NULL;
 
@@ -144,7 +145,7 @@ void particle_emitter_loop() {
 	struct PARTICLE_LIST *l, *next;
 	PARTICLE *tmp;
 
-	
+	d_render_offset(camera_x / 1000, 0);
 	for (l = p_list; l; ) {
 		if (!particle_emitter_loop_i(l->p)) {
 			next = l->next;
@@ -157,6 +158,7 @@ void particle_emitter_loop() {
 
 		l = l->next;
 	}
+	d_render_offset(0, 0);
 
 	return;
 }

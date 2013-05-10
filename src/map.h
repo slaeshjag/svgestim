@@ -3,6 +3,9 @@
 #include "svgestim.h"
 #include "game.h"
 
+int			camera_x;
+int			camera_scroll_speed;
+
 typedef enum {
 	MAP_SLOPE_NONE,
 	MAP_SLOPE_UP,
