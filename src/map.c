@@ -55,7 +55,7 @@ void map_load(int i) {
 	map.powerups=0;
 	map.sections=-1;
 	map.lines[0]=0;
-	
+	boss_shooting=0;
 	for(x=0; x<map.map[i]->layer->tilemap->w; x++) {
 		if(!(x%(MAP_SECTION_WIDTH))) {
 			map.sections++;

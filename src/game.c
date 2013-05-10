@@ -2,6 +2,7 @@
 #include "game.h"
 #include "map.h"
 #include "bullet.h"
+#include "enemy.h"
 
 void game_init() {
 	shape_init("models.stz");
@@ -16,6 +17,8 @@ void game_init() {
 	model.enemy_right=shape_load("enemy_right");
 	model.explosion=shape_load("explosion");
 	model.flamethrower=shape_load("flamethrower");
+	model.powerup[0]=shape_load("powerup_hp");
+	model.powerup[1]=shape_load("powerup_grenade");
 	
 	sound.explosion=d_sound_streamed_load("explosion.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
 	sound.jump=d_sound_streamed_load("jump.ogg", DARNIT_AUDIO_PRELOAD, DARNIT_AUDIO_STEREO);
@@ -37,6 +40,9 @@ void game_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
 		gamestate(GAMESTATE_PAUSE);
 	map_loop();
 	player_loop(keys);
+	if(boss_shooting>d_time_get()) {
+		boss_shooting=0;
+	}
 }
 
 void game_render() {

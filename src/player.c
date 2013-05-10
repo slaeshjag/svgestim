@@ -155,7 +155,11 @@ int player_loop(DARNIT_KEYS *keys) {
 	if(player->vel_x) {
 		shapesprite_animate(player->shape);
 	}
-
+	
+	if(boss_shooting&&shape_copy_collides(flamethrower, 800-256-200, 480/2, shapesprite_get_current_shape(player->shape), player->x, player->y)) {
+		player->health--;
+	}
+	
 	map_check_powerup(player->x/1000+camera_x/1000, player->y);
 	score++;
 

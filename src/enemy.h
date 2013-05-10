@@ -26,6 +26,8 @@ typedef struct {
 	SHAPE_COPY		*shape;
 } ENEMY;
 
+int boss_shooting;
+
 ENEMY *enemy_spawn(int x, int y, ENEMY_TYPE type, SHAPE *shape);
 void enemy_move(ENEMY *enemy);
 void enemy_render(ENEMY *enemy);

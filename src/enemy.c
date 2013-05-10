@@ -27,6 +27,13 @@ void enemy_move(ENEMY *enemy) {
 			}
 			enemy->x+=1000*(1-2*enemy->weapon.normal.dir);
 			break;
+		case ENEMY_TYPE_BOSS:
+			if(!(rand()%500)) {
+				boss_shooting=d_time_get()+2000;
+				particle_emitter_new(700, 3500, 1, 3000, 255, 0, 0, PARTICLE_TYPE_PULSE, enemy->x/1000-128, enemy->y/1000, 50, 1700, 1900);
+				particle_emitter_new(700, 3500, 1, 3000, 255, 255, 0, PARTICLE_TYPE_PULSE, enemy->x/1000-128, enemy->y/1000-48, 50, 1700, 1900);
+			}
+				
 		case ENEMY_TYPE_GUNMAN:
 			if(!(rand()%100))
 				enemy->weapon.bullet=bullet_add(enemy->weapon.bullet, enemy->x/1000-8, enemy->y/1000, 1700+(rand()%200), model.bullet, BULLET_OWNER_ENEMY);

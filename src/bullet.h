@@ -3,7 +3,7 @@
 
 #define	BULLET_VELOCITY		10000
 #define	BULLET_LIFE		2000
-#define	GRENADE_VELOCITY		10000
+#define	GRENADE_VELOCITY		6000
 #define	GRENADE_LIFE		1000
 
 typedef enum {
