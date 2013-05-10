@@ -29,6 +29,7 @@ int player_spawn(int x, int y, SHAPE *shape, SHAPE *gun) {
 }
 
 
+/* Bästa Snyggkoden™ i stan! */
 int player_loop(DARNIT_KEYS *keys) {
 	DARNIT_KEYS set;
 	static int shoot_key=0;
@@ -75,13 +76,14 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->vel_y = (player->vel_y < 0 ? -1 : 1) * PLAYER_SPEED_Y_MAX;
 
 	player->x += player->vel_x * d_last_frame_time() * (keys->l ? 2 : 1) / 1000;
-//	player->y += player->vel_y * d_last_frame_time() / 1000;
-
+	if (player->x < 0)
+		player->x = 0;
 
 	if (!map_collide(player->shape->coord, player->shape->lines, player->x / 1000, player->y / 1000) || player->vel_y < 0)
 		player->y += player->vel_y * d_last_frame_time() / 1000;
-	else
+	else {
 		player->vel_y = 0;
+	}
 
 	if (player->x / 1000 >= PLAYER_KILLZONE) {
 		player_kill();
