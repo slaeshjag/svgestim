@@ -6,15 +6,11 @@ typedef struct {
 	int			y;
 	int			vel_x;
 	int			vel_y;
-	
-	enum AIM {
-		AIM_NORMAL,
-		AIM_UP,
-		AIM_DOWN,
-	} aim;
+	int			gun_angle;
 	
 	SHAPE_COPY		*shape;
 	SHAPE_COPY		*gun;
+	BULLET_LIST		*bullet;
 } PLAYER;
 
 

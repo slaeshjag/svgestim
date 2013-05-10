@@ -16,10 +16,8 @@ static void particle_list_add(PARTICLE *p) {
 
 static void particle_list_remove(PARTICLE *p) {
 	struct PARTICLE_LIST **l, *tmp;
-
-	l = &p_list;
 	
-	while (*l) 
+	for (l = &p_list; *l; l = &(*l)->next)
 		if ((*l)->p == p) {
 			tmp = (*l);
 			*l = (*l)->next;

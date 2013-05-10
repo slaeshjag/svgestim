@@ -15,4 +15,8 @@ typedef struct BULLET_LIST {
 	struct BULLET_LIST	*next;
 } BULLET_LIST;
 
+BULLET_LIST *bullet_add(BULLET_LIST *list, int x, int y, int angle, SHAPE *bullet);
+void bullet_remove(BULLET_LIST **list, BULLET_LIST *remove);
+void bullet_loop(BULLET_LIST **list_p);
+
 #endif
