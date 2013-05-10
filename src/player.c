@@ -38,14 +38,15 @@ int player_loop(DARNIT_KEYS *keys) {
 	DARNIT_KEYS set;
 	static int shoot_key=0;
 	static int grenade_key=0;
+	int dir;
 	if (!player)
 		return 0;
 	shape=shapesprite_get_current_shape(player->shape);
 	
 	if(keys->up)
-		player->gun_angle=-300;
+		player->gun_angle=-200;
 	else if(keys->down)
-		player->gun_angle=300;
+		player->gun_angle=200;
 	else
 		player->gun_angle=0;
 	
@@ -85,15 +86,26 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->vel_y -= PLAYER_JUMP_ACCELERATION;
 	}
 
-	player->vel_y += 64 * d_last_frame_time();
+	player->vel_y += PLAYER_GRAVITY * d_last_frame_time();
 
 	if (abs(player->vel_y) > PLAYER_SPEED_Y_MAX)
 		player->vel_y = (player->vel_y < 0 ? -1 : 1) * PLAYER_SPEED_Y_MAX;
 
-	player->x += player->vel_x * d_last_frame_time() * (keys->l ? 2 : 1) / 1000;
+	dir=map_collide_dir(shape->coord, shape->lines, player->x / 1000, player->y / 1000, player->vel_x);
+	if(dir==MAP_SLOPE_UP) {
+		player->x += player->vel_x * d_last_frame_time()/ 1000;
+		player->y-=abs(player->vel_x) * d_last_frame_time() / 1000;
+	} else if(dir==MAP_SLOPE_VERTICAL) {
+		player->x-=player->vel_x/ 200;
+		player->vel_x*=-1;
+		player->y+=2000;
+	} else if(dir!=MAP_SLOPE_VERTICAL) {
+		player->y-=100;
+		player->x += player->vel_x * d_last_frame_time() * (keys->l ? 2 : 1) / 1000;
+	}
 	if (player->x < 32000)
 		player->x = 32000;
-
+	
 	if (!map_collide(shape->coord, shape->lines, player->x / 1000, player->y / 1000) || player->vel_y < 0)
 		player->y += player->vel_y * d_last_frame_time() / 1000;
 	else {

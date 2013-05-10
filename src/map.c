@@ -10,7 +10,7 @@
 #define MAPS 1
 #define MAP_LINES 1024
 #define MAP_SECTIONS 128
-#define MAP_SECTION_WIDTH (8*32)
+#define MAP_SECTION_WIDTH 16
 #define TILE_SIZE 8
 #define ENEMIES_MAX 1024
 
@@ -21,7 +21,7 @@ static struct {
 	DARNIT_LINE *line[MAP_SECTIONS];
 	LINE line_coord[MAP_SECTIONS][MAP_LINES];
 	unsigned int lines[MAP_SECTIONS];
-	unsigned int sections;
+	int sections;
 	ENEMY *enemy[ENEMIES_MAX];
 	unsigned int enemies;
 } map;
@@ -40,10 +40,14 @@ void map_init() {
 
 void map_load(int i) {
 	int x, y, layer, tmp, x2, y2;
-	map.sections=0;
+	map.sections=-1;
 	map.lines[0]=0;
 	
 	for(x=0; x<map.map[i]->layer->tilemap->w; x++) {
+		if(!(x%(MAP_SECTION_WIDTH))) {
+			map.sections++;
+			map.lines[map.sections]=0;
+		}
 		for(y=0; y<map.map[i]->layer->tilemap->h; y++) {
 			switch((tmp=map.map[i]->layer->tilemap->data[y*map.map[i]->layer->tilemap->w+x])&0xF0) {
 				case 0x30:
@@ -86,10 +90,6 @@ void map_load(int i) {
 				map.lines[map.sections]++;
 			}
 		}
-		if(!(x%(MAP_SECTION_WIDTH))) {
-			map.sections++;
-			map.lines[map.sections]=0;
-		}
 	}
 	map.current=i;
 	player_spawn(64, 128, model.player, model.gun);
@@ -121,6 +121,7 @@ void map_render() {
 
 
 MAP_SLOPE map_slope_direction(int dir, int section, int line) {
+	dir*=-1;
 	if (map.line_coord[section][line].x1 == map.line_coord[section][line].x2)
 		return MAP_SLOPE_VERTICAL;
 	
@@ -144,22 +145,32 @@ MAP_SLOPE map_slope_direction(int dir, int section, int line) {
 /*Mama mia, Italiano copy-pasta*/
 /*Si, si, it's good for you*/
 MAP_SLOPE map_collide_dir(int *obj, int lines, int x1, int y1, int dir) {
-	unsigned int section1=0, section2=0;
+	unsigned int section1=~0, section2=0;
 	int i;
 	for(i=0; i<lines; i++) {
 		section1=MIN(section1, obj[i*2] + x1);
 		section2=MAX(section2, obj[i*2] + x1);
 	}
 
-	section1 /= MAP_SECTION_WIDTH;
-	section2 /= MAP_SECTION_WIDTH;
+	section1 /= (MAP_SECTION_WIDTH*TILE_SIZE);
+	section2 /= (MAP_SECTION_WIDTH*TILE_SIZE);
 	
+	for(i=0; i<map.lines[section1]; i++) {
+		if(map.line_coord[section1][i].x1 == map.line_coord[section1][i].x2)
+			if(collision_test((void *) &map.line_coord[section1][i], 1, 0, 0, obj, lines, x1, y1))
+				return map_slope_direction(dir, section1, i);
+	}
 	for(i=0; i<map.lines[section1]; i++) {
 		if(collision_test((void *) &map.line_coord[section1][i], 1, 0, 0, obj, lines, x1, y1))
 			return map_slope_direction(dir, section1, i);
 	}
 	if(section1==section2)
 		return -1;
+	for(i=0; i<map.lines[section2]; i++) {
+		if(map.line_coord[section2][i].x1 == map.line_coord[section2][i].x2)
+			if(collision_test((void *) &map.line_coord[section2][i], 1, 0, 0, obj, lines, x1, y1))
+				return map_slope_direction(dir, section2, i);
+	}
 	for(i=0; i<map.lines[section2]; i++) {
 		if(collision_test((void *) &map.line_coord[section2][i], 1, 0, 0, obj, lines, x1, y1))
 			return map_slope_direction(dir, section2, i);
@@ -175,8 +186,8 @@ int map_collide(int *obj, int lines, int x1, int y1) {
 		section2=MAX(section2, obj[i*2] + x1);
 	}
 
-	section1 /= MAP_SECTION_WIDTH;
-	section2 /= MAP_SECTION_WIDTH;
+	section1 /= (MAP_SECTION_WIDTH*TILE_SIZE);
+	section2 /= (MAP_SECTION_WIDTH*TILE_SIZE);
 	
 	for(i=0; i<map.lines[section1]; i++) {
 		if(collision_test((void *) &map.line_coord[section1][i], 1, 0, 0, obj, lines, x1, y1))
