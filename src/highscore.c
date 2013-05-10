@@ -22,8 +22,8 @@ int highscore_init() {
 		return 0;
 	}
 
-	d_file_gets(buff, 64, f);
 	for (i = 0; i < HIGHSCORE_CAP && !d_file_eof(f); i++) {
+		d_file_gets(buff, 64, f);
 		sscanf(buff, "%i %s\n", &highscore_table[i].score, highscore_table[i].name);
 	}
 
