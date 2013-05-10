@@ -102,10 +102,9 @@ void grenade_loop(GRENADE_LIST **list_p) {
 		l->y+=l->vel_y;
 		l->vel_y+=256;
 		
-		if(map_collide(l->copy->coord, l->copy->lines, l->x / 1000, l->y / 1000))
-			l->vel_y*=-1;
-		
 		l->life += d_last_frame_time();
+		if(l->x<6000)
+			goto dealloc;
 		if (l->life >= GRENADE_LIFE) {
 			if((enemy=map_enemy_collide(grenade_explosion, l->x, l->y))) {
 				enemy->health-=70;
@@ -113,10 +112,22 @@ void grenade_loop(GRENADE_LIST **list_p) {
 			
 			particle_emitter_new(200, 1000, 1, 3000, 255, 0, 0, PARTICLE_TYPE_PULSE, l->x/1000, l->y/1000, 50, 0, 3600);
 			particle_emitter_new(200, 1000, 1, 3000, 255, 255, 0, PARTICLE_TYPE_PULSE, l->x/1000, l->y/1000, 50, 0, 3600);
+			dealloc:
 			*list = l->next;
 			shape_copy_free(l->copy);
 			free(l);
 			continue;
+		}
+		switch(map_collide_dir(l->copy->coord, l->copy->lines, l->x / 1000, l->y / 1000, 1)) {
+			case MAP_SLOPE_UP:
+			case MAP_SLOPE_DOWN:
+				l->vel_x*=-1;
+			case MAP_SLOPE_NONE:
+				l->vel_y*=-1;
+				break;
+			case MAP_SLOPE_VERTICAL:
+				l->vel_x*=-1;
+				break;
 		}
 		/* TODO: Test collision with all entities here */
 		
