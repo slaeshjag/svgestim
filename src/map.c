@@ -67,6 +67,8 @@ void map_load(int i) {
 					map.enemy[map.enemies]=enemy_spawn(x*TILE_SIZE, y*TILE_SIZE, tmp&0xF, model.enemy[tmp&0xF]);
 					if(tmp==0x30)
 						map.enemy[map.enemies]->weapon.normal.right=shape_copy_copy(model.enemy_right);
+					if(tmp==0x33)
+						map.enemy[map.enemies]->health=1000;
 					map.enemies++;
 					break;
 				case 0x50:
@@ -123,7 +125,7 @@ void map_load(int i) {
 void map_check_powerup(int x, int y) {
 	int i;
 	for(i=0; i<map.powerups; i++) {
-		if(x>map.powerup[i].x-35&&x<map.powerup[i].x+50&&y>map.powerup[i].y-50&&y<map.powerup[i].y+50&&(!map.powerup[i].taken)) {
+		if((x>map.powerup[i].x-10)&&(x<map.powerup[i].x+10)&&(y>map.powerup[i].y-10)&&(y<map.powerup[i].y+10)&&((!map.powerup[i].taken))) {
 			map.powerup[i].taken=1;
 			switch(map.powerup[i].type) {
 				case POWERUP_HP:
@@ -183,10 +185,13 @@ void map_render() {
 	
 	for(i=0; i<map.powerups; i++) {
 		d_render_tint(powerup_color[i].r, powerup_color[i].g, powerup_color[i].b, 0xFF);
-		if(!map.powerup[i].taken)
+		if(!map.powerup[i].taken) {
+			d_render_offset(-(map.powerup[i].x) + camera_x / 1000, -(map.powerup[i].y));
 			shape_copy_render(map.powerup[i].shape);
+		}
 	}
 	d_render_tint(0xFF, 0xFF, 0xFF, 0xFF);
+	d_render_offset(0, 0);
 }
 
 unsigned int map_get_tile(int x, int y, int layer) {

@@ -160,7 +160,7 @@ int player_loop(DARNIT_KEYS *keys) {
 		player->health--;
 	}
 	
-	map_check_powerup(player->x/1000+camera_x/1000, player->y);
+	map_check_powerup(player->x/1000+camera_x/1000, player->y/1000);
 	score++;
 
 	return 1;
