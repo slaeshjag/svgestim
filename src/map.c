@@ -68,7 +68,7 @@ void map_load(int i) {
 					if(tmp==0x30)
 						map.enemy[map.enemies]->weapon.normal.right=shape_copy_copy(model.enemy_right);
 					if(tmp==0x33)
-						map.enemy[map.enemies]->health=1000;
+						map.enemy[map.enemies]->health=600;
 					map.enemies++;
 					break;
 				case 0x50:
@@ -86,39 +86,42 @@ void map_load(int i) {
 				switch(map.map[i]->layer[layer].tilemap->data[y*map.map[i]->layer[layer].tilemap->w+x]) {
 					case 0x90:
 						for(tmp=0; map.map[i]->layer[layer].tilemap->data[(y+tmp)*map.map[i]->layer[layer].tilemap->w+x]!=0xA0; tmp--);
-						x2=TILE_SIZE*x+TILE_SIZE/2;
-						y2=TILE_SIZE*(y+tmp)+TILE_SIZE/2;
+						x2=TILE_SIZE*x;
+						y2=TILE_SIZE*(y+tmp)+TILE_SIZE;
+						d_render_line_move(map.line[map.sections], map.lines[map.sections], TILE_SIZE*x, TILE_SIZE*y+TILE_SIZE, x2, y2);
 						break;
 					case 0x91:
 						for(tmp=0; map.map[i]->layer[layer].tilemap->data[y*map.map[i]->layer[layer].tilemap->w+x+tmp]!=0xA1; tmp++);
-						x2=TILE_SIZE*(x+tmp)+TILE_SIZE/2;
-						y2=TILE_SIZE*y+TILE_SIZE/2;
+						x2=TILE_SIZE*(x+tmp)+TILE_SIZE;
+						y2=TILE_SIZE*y;
+						d_render_line_move(map.line[map.sections], map.lines[map.sections], TILE_SIZE*x+TILE_SIZE, TILE_SIZE*y+TILE_SIZE, x2, y2+TILE_SIZE);
 						break;
 					case 0x92:
 						for(tmp=0; map.map[i]->layer[layer].tilemap->data[(y+tmp)*map.map[i]->layer[layer].tilemap->w+x-tmp]!=0xA2; tmp--);
-						x2=TILE_SIZE*(x-tmp)+TILE_SIZE/2;
-						y2=TILE_SIZE*(y+tmp)+TILE_SIZE/2;
+						x2=TILE_SIZE*(x-tmp)+TILE_SIZE;
+						y2=TILE_SIZE*(y+tmp)+TILE_SIZE;
+						d_render_line_move(map.line[map.sections], map.lines[map.sections], TILE_SIZE*x+TILE_SIZE, TILE_SIZE*y+TILE_SIZE, x2, y2);
 						break;
 					case 0x93:
 						for(tmp=0; map.map[i]->layer[layer].tilemap->data[(y+tmp)*map.map[i]->layer[layer].tilemap->w+x+tmp]!=0xA3; tmp++);
-						x2=TILE_SIZE*(x+tmp)+TILE_SIZE/2;
-						y2=TILE_SIZE*(y+tmp)+TILE_SIZE/2;
+						x2=TILE_SIZE*(x+tmp)+TILE_SIZE;
+						y2=TILE_SIZE*(y+tmp)+TILE_SIZE;
+						d_render_line_move(map.line[map.sections], map.lines[map.sections], TILE_SIZE*x+TILE_SIZE, TILE_SIZE*y+TILE_SIZE, x2, y2);
 						break;
 					default:
 						continue;
 				}
-				d_render_line_move(map.line[map.sections], map.lines[map.sections], TILE_SIZE*x+TILE_SIZE/2, TILE_SIZE*y+TILE_SIZE/2, x2, y2);
-				map.line_coord[map.sections][map.lines[map.sections]].x1=TILE_SIZE*x+TILE_SIZE/2;
-				map.line_coord[map.sections][map.lines[map.sections]].y1=TILE_SIZE*y+TILE_SIZE/2;
-				map.line_coord[map.sections][map.lines[map.sections]].x2=x2;
-				map.line_coord[map.sections][map.lines[map.sections]].y2=y2;
+				map.line_coord[map.sections][map.lines[map.sections]].x1=TILE_SIZE*x;
+				map.line_coord[map.sections][map.lines[map.sections]].y1=TILE_SIZE*y;
+				map.line_coord[map.sections][map.lines[map.sections]].x2=x2;//+TILE_SIZE/2;
+				map.line_coord[map.sections][map.lines[map.sections]].y2=y2;//+TILE_SIZE/2;
 				map.lines[map.sections]++;
 			}
 		}
 	}
 	map.current=i;
 	player_spawn(64, 128, model.player, model.gun, model.grenade);
-	camera_x = 0;
+	camera_x = 1700000;
 	camera_scroll_speed = CAMERA_SCROLL_SPEED;
 }
 
@@ -130,11 +133,13 @@ void map_check_powerup(int x, int y) {
 			switch(map.powerup[i].type) {
 				case POWERUP_HP:
 					d_sound_play(sound.powerup, 0, 127, 127, 0);
-					player->health=(player->health+50)%100;
+					player->health+=50;
+					if(player->health>100)
+						player->health=100;
 					break;
 				case POWERUP_GRENADES:
 					d_sound_play(sound.powerup_small, 0, 127, 127, 0);
-					player->grenades=(player->grenades+2)%10;
+					player->grenades=(player->grenades+2);
 				default:
 					break;
 			}
@@ -165,10 +170,14 @@ ENEMY *map_enemy_collide(SHAPE_COPY *shape, int x, int y) {
 
 void map_loop() {
 	int i;
-	camera_scroll_speed = CAMERA_SCROLL_SPEED + score / 5000;
-	camera_x += camera_scroll_speed * d_last_frame_time();
-	if (camera_x / 1000 >= map.sections * TILE_SIZE * MAP_SECTION_WIDTH - 800)
-		camera_x = map.sections * TILE_SIZE * MAP_SECTION_WIDTH;
+	if(camera_scroll_speed>0) {
+		camera_scroll_speed = CAMERA_SCROLL_SPEED + score / 5000;
+		camera_x += camera_scroll_speed * d_last_frame_time();
+	}
+	if (camera_x / 1000 >= map.sections * TILE_SIZE * MAP_SECTION_WIDTH - 800) {
+		//camera_x = map.sections * TILE_SIZE * MAP_SECTION_WIDTH;
+		camera_scroll_speed=0;
+	}
 	for(i=0; i<map.enemies; i++) {
 		enemy_move(map.enemy[i]);
 	}
@@ -184,7 +193,7 @@ void map_render() {
 		enemy_render(map.enemy[i]);
 	
 	for(i=0; i<map.powerups; i++) {
-		d_render_tint(powerup_color[i].r, powerup_color[i].g, powerup_color[i].b, 0xFF);
+		d_render_tint(powerup_color[map.powerup[i].type].r, powerup_color[map.powerup[i].type].g, powerup_color[map.powerup[i].type].b, 0xFF);
 		if(!map.powerup[i].taken) {
 			d_render_offset(-(map.powerup[i].x) + camera_x / 1000, -(map.powerup[i].y));
 			shape_copy_render(map.powerup[i].shape);

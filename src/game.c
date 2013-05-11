@@ -40,8 +40,10 @@ void game_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
 		gamestate(GAMESTATE_PAUSE);
 	map_loop();
 	player_loop(keys);
-	if(boss_shooting>d_time_get()) {
+	if(boss_shooting&&(d_time_get()>boss_shooting)) {
 		boss_shooting=0;
+		particle_emitter_stop(boss_emitter[0]);
+		particle_emitter_stop(boss_emitter[1]);
 	}
 }
 

@@ -156,11 +156,15 @@ int player_loop(DARNIT_KEYS *keys) {
 		shapesprite_animate(player->shape);
 	}
 	
-	if(boss_shooting&&shape_copy_collides(flamethrower, 800-256-200, 480/2, shapesprite_get_current_shape(player->shape), player->x, player->y)) {
+	if(boss_shooting&&((player->x-camera_x)>300000)&&((boss_shooting-d_time_get())>1000)) {
 		player->health--;
+		if(player->health<0) {
+			player_kill();
+			return 1;
+		}
 	}
 	
-	map_check_powerup(player->x/1000+camera_x/1000, player->y/1000);
+	map_check_powerup(player->x/1000/*+camera_x/1000*/, player->y/1000);
 	score++;
 
 	return 1;
@@ -172,6 +176,10 @@ void player_render() {
 		return;
 	
 	shapesprite_render(player->shape, player->x / 1000 - camera_x / 1000, player->y / 1000);
+	
+	d_render_offset(-(800-256), -(480/2+30));
+	if(boss_shooting)
+		shape_copy_render(flamethrower);
 	
 	d_render_offset(-(player->x / 1000 - camera_x / 1000)-4, -(player->y / 1000)+6);
 	shape_copy_rotate(player->gun, player->gun_angle);

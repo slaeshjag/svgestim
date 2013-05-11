@@ -43,7 +43,7 @@ void bullet_loop(BULLET_LIST **list_p) {
 		l->y+=l->vel_y;
 
 		l->life += d_last_frame_time();
-		if (l->life >= BULLET_LIFE||l->x<3000) {
+		if (l->life >= BULLET_LIFE||l->x<3000||l->x>camera_x+800000) {
 			*list = l->next;
 			shape_copy_free(l->copy);
 			free(l);

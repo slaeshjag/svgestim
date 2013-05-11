@@ -16,9 +16,14 @@ ENEMY *enemy_spawn(int x, int y, ENEMY_TYPE type, SHAPE *shape) {
 }
 
 void enemy_move(ENEMY *enemy) {
-	if(enemy->health<=0)
+	if(enemy->health<=0) {
+		if(enemy->type==ENEMY_TYPE_BOSS)
+			player_kill();
 		return;
+	}
 	//check if outside screeen
+	if(camera_x+1000000<enemy->x)
+		return;
 	switch(enemy->type) {
 		case ENEMY_TYPE_NORMAL:
 			if(map_get_tile(enemy->x/1000+8*(1-2*enemy->weapon.normal.dir), (enemy->y+48)/1000, 0)==0x40) {
@@ -28,12 +33,14 @@ void enemy_move(ENEMY *enemy) {
 			enemy->x+=1000*(1-2*enemy->weapon.normal.dir);
 			break;
 		case ENEMY_TYPE_BOSS:
-			if(!(rand()%500)) {
-				boss_shooting=d_time_get()+2000;
-				particle_emitter_new(700, 4500, 1, 3000, 255, 0, 0, PARTICLE_TYPE_PULSE, enemy->x/1000-128, enemy->y/1000-48, 50, 1700, 1900);
-				particle_emitter_new(700, 4500, 1, 3000, 255, 255, 0, PARTICLE_TYPE_PULSE, enemy->x/1000-128, enemy->y/1000-48, 50, 1700, 1900);
+			if((!(rand()%400))&&!boss_shooting) {
+				boss_shooting=d_time_get()+4000;
+				boss_emitter[0]=particle_emitter_new(700, 300, 1, 20000, 255, 0, 0, PARTICLE_TYPE_RADIAL_SHOWER, enemy->x/1000-128, enemy->y/1000-30, 0, 1700, 1900);
+				boss_emitter[1]=particle_emitter_new(700, 300, 1, 20000, 255, 255, 0, PARTICLE_TYPE_RADIAL_SHOWER, enemy->x/1000-128, enemy->y/1000-30, 0, 1700, 1900);
 			}
-				
+			if(!(rand()%16600))
+				enemy->weapon.bullet=bullet_add(enemy->weapon.bullet, enemy->x/1000-128, enemy->y/1000-10, 1700+(rand()%200), model.bullet, BULLET_OWNER_ENEMY);
+			break;
 		case ENEMY_TYPE_GUNMAN:
 			if(!(rand()%100))
 				enemy->weapon.bullet=bullet_add(enemy->weapon.bullet, enemy->x/1000-8, enemy->y/1000, 1700+(rand()%200), model.bullet, BULLET_OWNER_ENEMY);

@@ -28,6 +28,8 @@ typedef struct {
 
 int boss_shooting;
 
+void *boss_emitter[2];
+
 ENEMY *enemy_spawn(int x, int y, ENEMY_TYPE type, SHAPE *shape);
 void enemy_move(ENEMY *enemy);
 void enemy_render(ENEMY *enemy);
