@@ -38,7 +38,7 @@ void enemy_move(ENEMY *enemy) {
 				boss_emitter[0]=particle_emitter_new(700, 300, 1, 20000, 255, 0, 0, PARTICLE_TYPE_RADIAL_SHOWER, enemy->x/1000-128, enemy->y/1000-30, 0, 1700, 1900);
 				boss_emitter[1]=particle_emitter_new(700, 300, 1, 20000, 255, 255, 0, PARTICLE_TYPE_RADIAL_SHOWER, enemy->x/1000-128, enemy->y/1000-30, 0, 1700, 1900);
 			}
-			if(!(rand()%16600))
+			if(!(rand()%50))
 				enemy->weapon.bullet=bullet_add(enemy->weapon.bullet, enemy->x/1000-128, enemy->y/1000-10, 1700+(rand()%200), model.bullet, BULLET_OWNER_ENEMY);
 			break;
 		case ENEMY_TYPE_GUNMAN:

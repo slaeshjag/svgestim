@@ -177,9 +177,9 @@ void player_render() {
 	
 	shapesprite_render(player->shape, player->x / 1000 - camera_x / 1000, player->y / 1000);
 	
-	d_render_offset(-(800-256), -(480/2+30));
-	if(boss_shooting)
-		shape_copy_render(flamethrower);
+	//d_render_offset(-(800-256), -(480/2+30));
+	//if(boss_shooting)
+	//	shape_copy_render(flamethrower);
 	
 	d_render_offset(-(player->x / 1000 - camera_x / 1000)-4, -(player->y / 1000)+6);
 	shape_copy_rotate(player->gun, player->gun_angle);
@@ -203,7 +203,7 @@ void player_render() {
 
 void player_hurt(int damage) {
 	player->health-=damage;
-	printf("hp %i\n", player->health);
+	//printf("hp %i\n", player->health);
 	if(player->health<=0) {
 		d_menu_selection_wait(highscore.enter_name);
 		player_kill();
