@@ -196,8 +196,10 @@ void player_render() {
 void player_hurt(int damage) {
 	player->health-=damage;
 	printf("hp %i\n", player->health);
-	if(player->health<=0)
+	if(player->health<=0) {
+		d_menu_selection_wait(highscore.enter_name);
 		player_kill();
+	}
 }
 
 void player_kill() {

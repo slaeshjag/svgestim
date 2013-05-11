@@ -1,15 +1,16 @@
 #include "svgestim.h"
 #include "highscore.h"
 
-static struct {
-	DARNIT_TEXT_SURFACE *title;
-	DARNIT_TEXT_SURFACE *text;
-} highscore;
 
 int highscore_init() {
 	DARNIT_FILE *f;
 	int i;
 	char buff[64];
+
+	highscore.enter_name = d_text_surface_new(font.vectroid, 600, 400, 150, 160);
+	d_text_surface_string_append(highscore.enter_name, "New highscore! Enter your name");
+	*highscore.name_buff = 0;
+	highscore.name = d_menu_textinput_new(100, 200, font.vectroid, highscore.name_buff, 32, 400);
 
 	for (i = 0; i < HIGHSCORE_CAP; i++) {
 		highscore_table[i].score = 0;
@@ -46,24 +47,44 @@ void highscore_save() {
 			break;
 		sprintf(buff, "%i %s\n", highscore_table[i].score, highscore_table[i].name);
 		d_file_write(buff, strlen(buff), f);
-		d_file_close(f);
 	}
+		d_file_close(f);
 
 	return;
 }
 
 
-void highscore_add(int highscore, char *name) {
+int highscore_is_new(int highscore_nn) {
 	int i, j;
+
 	j = 0;
-	HIGHSCORE hs;
 
 	for (i = 0; i < HIGHSCORE_CAP; i++) {
 		if (highscore_table[i].score < highscore_table[j].score)
 			j = i;
 	}
 
-	highscore_table[j].score = highscore;
+	if (highscore_table[j].score >= highscore_nn)
+		return 0;
+	
+	return 1;
+}
+
+
+void highscore_add(int highscore_nn, char *name) {
+	int i, j;
+	HIGHSCORE hs;
+
+	j = 0;
+	for (i = 0; i < HIGHSCORE_CAP; i++) {
+		if (highscore_table[i].score < highscore_table[j].score)  
+			j = i;
+	}
+
+	if (highscore_table[i].score >= score)
+		return;
+
+	highscore_table[j].score = highscore_nn;
 	sprintf(highscore_table[j].name, "%s", name);
 
 	for (i = 0; i < HIGHSCORE_CAP; i++) {
