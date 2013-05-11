@@ -70,7 +70,18 @@ void menu_render() {
 }
 
 void gameover_handle(DARNIT_KEYS *keys, DARNIT_MOUSE *mouse) {
-	if(keys->start)
+	if (highscore_is_new(score)) {
+		d_render_begin();
+		if (d_menu_loop(highscore.name) != -1) {
+			if (*highscore.name_buff < 0x20)
+				sprintf(highscore.name_buff, "arne.");
+			highscore_add(score, highscore.name_buff);
+			gamestate(GAMESTATE_HIGHSCORE);
+		}
+		d_render_end();
+	}
+
+	else if(keys->start)
 		gamestate(GAMESTATE_MENU);
 }
 
@@ -81,6 +92,8 @@ void gameover_render() {
 	d_text_surface_reset(gameover.score);
 	sprintf(scoretext, "Score %i", score);
 	d_text_surface_string_append(gameover.score, scoretext);
+	if (highscore_is_new(score))
+		d_text_surface_draw(highscore.enter_name);
 	
 	d_text_surface_draw(gameover.score);
 }
